@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "31807899395",
+    "project_id": "chat-ai-pu",
+    "storage_bucket": "chat-ai-pu.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:31807899395:android:bdeafd0cae07b0040d0b36",
+        "android_client_info": {
+          "package_name": "com.maginate.chatpulseai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "31807899395-fukbrttauti5etv8pf558qtirkfnt91l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnp27aAKXw28IctPdKML-5EVGiXuSkZbo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "31807899395-fukbrttauti5etv8pf558qtirkfnt91l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

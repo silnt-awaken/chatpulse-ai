@@ -1,0 +1,25 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "chatpulse_ai",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/config/main.dart"
+        },
+        {
+            "name": "chatpulse_ai (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "program": "lib/config/main.dart"
+        },
+        {
+            "name": "chatpulse_ai (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "program": "lib/config/main.dart"
+        }
+    ]
+}

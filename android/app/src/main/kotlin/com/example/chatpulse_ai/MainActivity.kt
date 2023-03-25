@@ -1,0 +1,6 @@
+package com.maginate.chatpulseai
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity() {
+}
