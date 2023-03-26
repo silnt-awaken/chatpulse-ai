@@ -53,7 +53,7 @@ class OpenAIFirebaseRepository {
         },
         options: Options(
           // Set the timeout in milliseconds, e.g., 5000 for 5 seconds
-          receiveTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 20),
         ),
       );
 
