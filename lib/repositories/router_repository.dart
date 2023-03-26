@@ -10,7 +10,7 @@ class RouterRepository {
 
   RouterRepository() {
     _router = GoRouter(
-        initialLocation: '/authentication',
+        initialLocation: '/',
         routes: [
           GoRoute(
             path: '/',
@@ -30,8 +30,30 @@ class RouterRepository {
               return const ChatSessionsScreen();
             },
           ),
+          GoRoute(
+            path: '/splash',
+            builder: (BuildContext context, GoRouterState state) {
+              return const Scaffold(
+                backgroundColor: Color(0xFFd5d5e5),
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            },
+          ),
         ],
-        redirect: (context, state) {
+        redirect: (context, state) async {
+          // if (state.location == '/') {
+          //   final hasStoredApiKey = await context
+          //       .read<OpenAIFirebaseRepository>()
+          //       .validateApiKey(null);
+
+          //   if (hasStoredApiKey) {
+          //     return null;
+          //   } else {
+          //     return '/authentication';
+          //   }
+          // }
           return null;
         });
   }

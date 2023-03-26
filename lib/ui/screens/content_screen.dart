@@ -44,32 +44,34 @@ class _ContentScreenState extends State<ContentScreen> {
             child: Scaffold(
               backgroundColor: const Color(0xFFd5d5e5).withOpacity(0.9),
               drawer: const SimpleDrawer(),
-              body: Stack(
-                children: [
-                  ScrollConfiguration(
-                    behavior: NoGlowScrollBehavior(),
-                    child: CustomScrollView(
-                      controller: _scrollController,
-                      slivers: [
-                        SliverPersistentHeader(
-                            delegate: CustomAppBar(
+              body: SafeArea(
+                child: Stack(
+                  children: [
+                    ScrollConfiguration(
+                      behavior: NoGlowScrollBehavior(),
+                      child: CustomScrollView(
+                        controller: _scrollController,
+                        slivers: [
+                          SliverPersistentHeader(
+                              delegate: CustomAppBar(
+                                scrollController: _scrollController,
+                              ),
+                              floating: true,
+                              pinned: _isAtBottom),
+                          SliverList(
+                              delegate: SliverChildListDelegate([
+                            ContentSection(
                               scrollController: _scrollController,
-                            ),
-                            floating: true,
-                            pinned: _isAtBottom),
-                        SliverList(
-                            delegate: SliverChildListDelegate([
-                          ContentSection(
-                            scrollController: _scrollController,
-                          )
-                        ]))
-                      ],
+                            )
+                          ]))
+                        ],
+                      ),
                     ),
-                  ),
-                  MessageInputRowSection(
-                    scrollController: _scrollController,
-                  )
-                ],
+                    MessageInputRowSection(
+                      scrollController: _scrollController,
+                    )
+                  ],
+                ),
               ),
             ),
           );

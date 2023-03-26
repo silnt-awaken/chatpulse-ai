@@ -30,7 +30,7 @@ class App extends StatelessWidget {
             ContentBloc(openAIFirebaseRepository, authRepository)
               ..add(ContentInitialEvent()),
         child: BlocListener<ContentBloc, ContentState>(
-          listener: (context, state) {
+          listener: (context, state) async {
             if (state.authStatus == ContentAuthStatus.authorized) {
               router.go('/');
             } else {

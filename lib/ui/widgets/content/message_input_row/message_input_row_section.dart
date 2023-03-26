@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 
 import 'message_input_row.dart';
 
-class MessageInputRowSection extends StatelessWidget {
+class MessageInputRowSection extends StatefulWidget {
   final ScrollController scrollController;
   final String? sessionId;
-  MessageInputRowSection(
+  const MessageInputRowSection(
       {super.key, required this.scrollController, this.sessionId});
 
+  @override
+  State<MessageInputRowSection> createState() => _MessageInputRowSectionState();
+}
+
+class _MessageInputRowSectionState extends State<MessageInputRowSection> {
   final TextEditingController _textEditingController = TextEditingController();
 
   @override
@@ -23,14 +28,14 @@ class MessageInputRowSection extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                   child: CustomInputTextField(
-                scrollController: scrollController,
-                sessionId: sessionId,
+                scrollController: widget.scrollController,
+                sessionId: widget.sessionId,
                 textEditingController: _textEditingController,
               )),
               const SizedBox(width: 10),
               SendButton(
-                  scrollController: scrollController,
-                  sessionId: sessionId,
+                  scrollController: widget.scrollController,
+                  sessionId: widget.sessionId,
                   textEditingController: _textEditingController),
               const SizedBox(width: 10),
               const MicButton(),

@@ -24,6 +24,10 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           onData: (user) {
         if (user != null) {
           openAIFirebaseRepository.assignUserRef(user.uid);
+          if (openAIFirebaseRepository.apiKey == null) {
+            openAIFirebaseRepository.validateApiKey(null);
+          }
+
           return state.copyWith(
               authStatus: ContentAuthStatus.authorized, userId: () => user.uid);
         } else {
@@ -48,12 +52,14 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
         ],
         responseStatus: ResponseStatus.waiting,
       ));
-      await openAIFirebaseRepository.sendTextToOpenAI(
-          event.text, state.userId!);
+      final hasSuccessfullySent = await openAIFirebaseRepository
+          .sendTextToOpenAI(event.text, state.userId!);
       emit(state.copyWith(
         history: openAIFirebaseRepository.history,
         summary: openAIFirebaseRepository.summary,
-        responseStatus: ResponseStatus.success,
+        responseStatus: hasSuccessfullySent
+            ? ResponseStatus.success
+            : ResponseStatus.failed,
       ));
     });
 
@@ -61,7 +67,8 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       openAIFirebaseRepository.newChatSession();
       emit(state.copyWith(
           history: openAIFirebaseRepository.history,
-          summary: openAIFirebaseRepository.summary));
+          summary: openAIFirebaseRepository.summary,
+          responseStatus: ResponseStatus.idle));
     });
 
     on<ContentChangeSessionsEvent>((event, emit) async {
@@ -88,14 +95,14 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     });
 
     on<ContentCreateUserEvent>((event, emit) async {
-      final isApiKeyValid =
+      await authRepository.createUserWithEmailAndPassword(
+          event.email, event.password);
+      final isValid =
           await openAIFirebaseRepository.validateApiKey(event.apiKey);
-      if (isApiKeyValid) {
-        await authRepository.createUserWithEmailAndPassword(
-            event.email, event.password);
-      } else {
-        return;
-      }
+      emit(state.copyWith(
+          authStatus: isValid
+              ? ContentAuthStatus.authorized
+              : ContentAuthStatus.unauthorized));
     });
 
     on<ContentLogoutEvent>((event, emit) async {
