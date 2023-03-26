@@ -82,9 +82,7 @@ class _CustomInputTextFieldState extends State<CustomInputTextField> {
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: TextField(
                   controller: widget.textEditingController,
-                  autocorrect: false,
-                  enableSuggestions: false,
-                  keyboardType: TextInputType.visiblePassword,
+                  //keyboardType: TextInputType.visiblePassword,
                   focusNode: _focusNode,
                   maxLines: null,
                   onSubmitted: (value) {

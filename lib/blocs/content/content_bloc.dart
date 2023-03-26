@@ -23,6 +23,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       await emit.forEach<User?>(authRepository.authStateChanges,
           onData: (user) {
         if (user != null) {
+          openAIFirebaseRepository.assignUserRef(user.uid);
           return state.copyWith(
               authStatus: ContentAuthStatus.authorized, userId: () => user.uid);
         } else {

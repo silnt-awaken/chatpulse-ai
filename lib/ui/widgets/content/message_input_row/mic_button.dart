@@ -24,9 +24,9 @@ class _MicButtonState extends State<MicButton> {
             ),
           ),
         );
-        setState(() {
-          isPressed = !isPressed;
-        });
+        // setState(() {
+        //   isPressed = !isPressed;
+        // });
       },
       child: AnimatedContainer(
         height: 40,

@@ -16,8 +16,11 @@ class OpenAIFirebaseRepository {
   List<Message> history = [];
   String summary = '';
 
-  sendTextToOpenAI(String inputText, String userId) async {
+  assignUserRef(String userId) {
     userRef = usersRef.doc(userId);
+  }
+
+  sendTextToOpenAI(String inputText, String userId) async {
     currentChatSessionId ??= userRef.collection('chats').doc().id;
     sessionRef = userRef.collection('chats').doc(currentChatSessionId);
     DocumentSnapshot sessionSnapshot = await sessionRef.get();
