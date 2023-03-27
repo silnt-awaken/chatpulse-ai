@@ -146,9 +146,9 @@ class AuthenticationScreen extends StatelessWidget {
                             onPressed: () {
                               context.read<ContentBloc>().add(
                                     ContentCreateUserEvent(
-                                      email: emailController.text,
-                                      password: passwordController.text,
-                                      apiKey: apiKeyController.text,
+                                      email: emailController.text.trim(),
+                                      password: passwordController.text.trim(),
+                                      apiKey: apiKeyController.text.trim(),
                                     ),
                                   );
 

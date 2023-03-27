@@ -36,6 +36,14 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       });
     });
 
+    on<ContentApiTrackerEvent>((event, emit) async {
+      await emit.forEach<String>(openAIFirebaseRepository.apiKeyStream,
+          onData: (apiKey) {
+        openAIFirebaseRepository.dispose();
+        return state.copyWith(apiKey: () => apiKey);
+      });
+    });
+
     on<ContentInputTextChangedEvent>((event, emit) {
       emit(state.copyWith(inputText: event.text));
     });

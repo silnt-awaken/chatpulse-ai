@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chatpulse_ai/models/message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
@@ -15,6 +17,10 @@ class OpenAIFirebaseRepository {
 
   List<Message> history = [];
   String summary = '';
+
+  final StreamController<String> apiKeyController = StreamController<String>();
+  Stream<String> get apiKeyStream =>
+      apiKeyController.stream.asBroadcastStream();
 
   assignUserRef(String userId) {
     userRef = usersRef.doc(userId);
@@ -116,8 +122,9 @@ class OpenAIFirebaseRepository {
 
       if (response.statusCode == 200) {
         this.apiKey = apiKey ?? fetchedApiKey;
-        print(userRef);
-        await userRef!.set({'apiKey': apiKey}, SetOptions(merge: true));
+        apiKeyController.add(this.apiKey!);
+        await userRef!.set({'apiKey': this.apiKey}, SetOptions(merge: true));
+
         return true;
       } else {
         return false;
@@ -162,33 +169,13 @@ class OpenAIFirebaseRepository {
     summary = '';
   }
 
-  Stream<List<Map<String, dynamic>>> getChatSessions() {
-    final chatSnapshots = userRef!.collection('chats').snapshots();
-
-    return chatSnapshots.map((chatSnapshot) {
-      return chatSnapshot.docs.map((chatDoc) {
-        return chatDoc.data();
-      }).toList();
-    });
-  }
-
-  Future<List<Map<String, dynamic>>> getChatSessionsList() async {
-    if (userRef == null) {
-      await validateApiKey(null);
-      if (userRef == null) {
-        return [];
-      } else {
-        final chatSnapshots = await userRef!.collection('chats').get();
-        return chatSnapshots.docs.map((chatDoc) {
-          return chatDoc.data();
-        }).toList();
-      }
-    } else {
-      final chatSnapshots = await userRef!.collection('chats').get();
-      return chatSnapshots.docs.map((chatDoc) {
-        return chatDoc.data();
-      }).toList();
-    }
+  Stream<List<Map<String, dynamic>>> getChatSessionsListFromStream() async* {
+    yield* userRef!.collection('chats').snapshots().map((chatSnapshot) =>
+        chatSnapshot.docs
+            .map((chatDoc) => chatDoc.data())
+            .where((element) =>
+                element['messages'].length > 1 && element['summary'].isNotEmpty)
+            .toList());
   }
 
   getMessagesFromChangedSession(String sessionId) async {
@@ -198,5 +185,9 @@ class OpenAIFirebaseRepository {
     final messages = sessionSnapshot.data()?['messages'] as List;
     history = messages.map((message) => Message.fromJson(message)).toList();
     summary = sessionSnapshot.data()?['summary'] as String;
+  }
+
+  void dispose() {
+    apiKeyController.close();
   }
 }

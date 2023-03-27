@@ -88,57 +88,70 @@ class _CustomInputTextFieldState extends State<CustomInputTextField> {
                         return state.responseStatus;
                       },
                       builder: (context, state) {
-                        return TextField(
-                          controller: widget.textEditingController,
-                          focusNode: _focusNode,
-                          maxLines: null,
-                          onSubmitted: (value) {
-                            if (state == ResponseStatus.waiting) return;
-                            widget.scrollController.animateTo(
-                              widget.scrollController.position.maxScrollExtent,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeOut,
-                            );
-                            FocusManager.instance.primaryFocus?.unfocus();
-                            context
-                                .read<ContentBloc>()
-                                .add(ContentSendTextEvent(text: value.trim()));
-
-                            context.read<ContentBloc>().add(
-                                const ContentInputTextChangedEvent(text: ''));
-                            widget.textEditingController.clear();
+                        return BlocSelector<ContentBloc, ContentState, String?>(
+                          selector: (state) {
+                            return state.apiKey;
                           },
-                          onChanged: ((value) {
-                            context
-                                .read<ContentBloc>()
-                                .add(ContentInputTextChangedEvent(text: value));
+                          builder: (context, apiKey) {
+                            return TextField(
+                              controller: widget.textEditingController,
+                              focusNode: _focusNode,
+                              maxLines: null,
+                              enabled: apiKey != null,
+                              onSubmitted: (value) {
+                                if (state == ResponseStatus.waiting) return;
+                                if (widget.textEditingController.text
+                                    .trim()
+                                    .isEmpty) return;
+                                widget.scrollController.animateTo(
+                                  widget.scrollController.position
+                                      .maxScrollExtent,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeOut,
+                                );
+                                FocusManager.instance.primaryFocus?.unfocus();
+                                context.read<ContentBloc>().add(
+                                    ContentSendTextEvent(text: value.trim()));
 
-                            widget.textEditingController.selection =
-                                TextSelection.fromPosition(TextPosition(
-                                    offset: widget
-                                        .textEditingController.text.length));
-                          }),
-                          style: GoogleFonts.nunitoSans(
-                            color: Colors.black87,
-                            fontSize: 16,
-                          ),
-                          decoration: InputDecoration(
-                            hintText: 'Type your message here',
-                            hintStyle: GoogleFonts.nunitoSans(
-                              color: Colors.black54,
-                              fontSize: 16,
-                            ),
-                            border: InputBorder.none,
-                          ),
-                          cursorColor: Colors
-                              .transparent, // hide the cursor by making it transparent
-                          showCursor: !_isFocused ||
-                              _focusNode.hasFocus &&
+                                context.read<ContentBloc>().add(
+                                    const ContentInputTextChangedEvent(
+                                        text: ''));
+                                widget.textEditingController.clear();
+                              },
+                              onChanged: ((value) {
+                                context.read<ContentBloc>().add(
+                                    ContentInputTextChangedEvent(text: value));
+
+                                widget.textEditingController.selection =
+                                    TextSelection.fromPosition(TextPosition(
+                                        offset: widget.textEditingController
+                                            .text.length));
+                              }),
+                              style: GoogleFonts.nunitoSans(
+                                color: Colors.black87,
+                                fontSize: 16,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: apiKey == null
+                                    ? 'Awaiting api key validation...'
+                                    : 'Type your message here',
+                                hintStyle: GoogleFonts.nunitoSans(
+                                  color: Colors.black54,
+                                  fontSize: 16,
+                                ),
+                                border: InputBorder.none,
+                              ),
+                              cursorColor: Colors
+                                  .transparent, // hide the cursor by making it transparent
+                              showCursor: !_isFocused ||
                                   _focusNode.hasFocus &&
-                                  _focusNode.hasFocus &&
-                                  _focusNode.hasFocus &&
-                                  _focusNode
-                                      .hasFocus, // hide the cursor if the TextField is not focused or if it is focused but there is no text
+                                      _focusNode.hasFocus &&
+                                      _focusNode.hasFocus &&
+                                      _focusNode.hasFocus &&
+                                      _focusNode
+                                          .hasFocus, // hide the cursor if the TextField is not focused or if it is focused but there is no text
+                            );
+                          },
                         );
                       },
                     ),

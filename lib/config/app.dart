@@ -28,7 +28,8 @@ class App extends StatelessWidget {
         lazy: false,
         create: (context) =>
             ContentBloc(openAIFirebaseRepository, authRepository)
-              ..add(ContentInitialEvent()),
+              ..add(ContentInitialEvent())
+              ..add(ContentApiTrackerEvent()),
         child: BlocListener<ContentBloc, ContentState>(
           listener: (context, state) async {
             if (state.authStatus == ContentAuthStatus.authorized) {

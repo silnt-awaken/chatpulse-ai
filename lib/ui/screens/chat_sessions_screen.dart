@@ -36,8 +36,10 @@ class ChatSessionsScreen extends StatelessWidget {
         elevation: 0,
       ),
       backgroundColor: const Color(0xFFd5d5e5).withOpacity(0.9),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: context.read<OpenAIFirebaseRepository>().getChatSessionsList(),
+      body: StreamBuilder<List<Map<String, dynamic>>>(
+        stream: context
+            .read<OpenAIFirebaseRepository>()
+            .getChatSessionsListFromStream(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(

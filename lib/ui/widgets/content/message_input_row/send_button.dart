@@ -43,6 +43,7 @@ class _SendButtonState extends State<SendButton> {
         return GestureDetector(
           onTap: () {
             if (state == ResponseStatus.waiting) return;
+            if (widget.textEditingController.text.trim().isEmpty) return;
             widget.scrollController.animateTo(
               widget.scrollController.position.maxScrollExtent,
               duration: const Duration(milliseconds: 300),
@@ -56,6 +57,9 @@ class _SendButtonState extends State<SendButton> {
                     .inputText
                     .trim()));
             widget.textEditingController.clear();
+            context
+                .read<ContentBloc>()
+                .add(const ContentInputTextChangedEvent(text: ''));
           },
           onTapDown: _onTapDown,
           onTapUp: _onTapUp,

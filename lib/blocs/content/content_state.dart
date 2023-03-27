@@ -7,6 +7,7 @@ class ContentState extends Equatable {
   final String inputText;
   final ResponseStatus responseStatus;
   final String? userId;
+  final String? apiKey;
   const ContentState({
     required this.authStatus,
     required this.history,
@@ -14,6 +15,7 @@ class ContentState extends Equatable {
     required this.inputText,
     required this.responseStatus,
     this.userId,
+    this.apiKey,
   });
 
   @override
@@ -23,7 +25,8 @@ class ContentState extends Equatable {
         summary,
         inputText,
         responseStatus,
-        userId ?? false
+        userId ?? false,
+        apiKey ?? false
       ];
 
   ContentState copyWith({
@@ -33,6 +36,7 @@ class ContentState extends Equatable {
     String? inputText,
     ResponseStatus? responseStatus,
     String Function()? userId,
+    String Function()? apiKey,
   }) {
     return ContentState(
       authStatus: authStatus ?? this.authStatus,
@@ -41,6 +45,7 @@ class ContentState extends Equatable {
       inputText: inputText ?? this.inputText,
       responseStatus: responseStatus ?? this.responseStatus,
       userId: userId != null ? userId() : this.userId,
+      apiKey: apiKey != null ? apiKey() : this.apiKey,
     );
   }
 }

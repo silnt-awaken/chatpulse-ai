@@ -9,6 +9,8 @@ abstract class ContentEvent extends Equatable {
 
 class ContentInitialEvent extends ContentEvent {}
 
+class ContentApiTrackerEvent extends ContentEvent {}
+
 class ContentInputTextChangedEvent extends ContentEvent {
   final String text;
   const ContentInputTextChangedEvent({required this.text});

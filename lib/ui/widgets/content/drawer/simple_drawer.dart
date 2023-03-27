@@ -34,11 +34,21 @@ class SimpleDrawer extends StatelessWidget {
                 Navigator.pop(context);
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.chat, color: Colors.black),
-              title: const AppText('Previous Chats'),
-              onTap: () {
-                context.go('/chatSessions');
+            BlocSelector<ContentBloc, ContentState, String?>(
+              selector: (state) {
+                return state.apiKey;
+              },
+              builder: (context, apiKey) {
+                return Visibility(
+                  visible: apiKey != null,
+                  child: ListTile(
+                    leading: const Icon(Icons.chat, color: Colors.black),
+                    title: const AppText('Previous Chats'),
+                    onTap: () {
+                      context.go('/chatSessions');
+                    },
+                  ),
+                );
               },
             ),
             ListTile(
