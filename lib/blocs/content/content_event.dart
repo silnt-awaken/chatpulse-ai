@@ -49,3 +49,5 @@ class ContentCreateUserEvent extends ContentEvent {
 }
 
 class ContentLogoutEvent extends ContentEvent {}
+
+class ContentToggleDarkModeEvent extends ContentEvent {}

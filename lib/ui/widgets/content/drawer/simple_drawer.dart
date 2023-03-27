@@ -1,4 +1,5 @@
 import 'package:chatpulse_ai/blocs/content/content_bloc.dart';
+import 'package:chatpulse_ai/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -11,56 +12,82 @@ class SimpleDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: Container(
-        color: const Color(0xFFd5d5e5),
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color(0xFFc5c5d5),
-              ),
-              child: AppText(
-                'Menu',
-                fontSize: 24,
-              ),
-            ),
-            ListTile(
-              leading:
-                  const Icon(Icons.chat_bubble_outline, color: Colors.black),
-              title: const AppText('New Chat'),
-              onTap: () {
-                context.read<ContentBloc>().add(ContentStartNewSessionEvent());
-                Navigator.pop(context);
-              },
-            ),
-            BlocSelector<ContentBloc, ContentState, String?>(
-              selector: (state) {
-                return state.apiKey;
-              },
-              builder: (context, apiKey) {
-                return Visibility(
-                  visible: apiKey != null,
-                  child: ListTile(
-                    leading: const Icon(Icons.chat, color: Colors.black),
-                    title: const AppText('Previous Chats'),
-                    onTap: () {
-                      context.go('/chatSessions');
-                    },
+      child: BlocSelector<ContentBloc, ContentState, bool>(
+        selector: (state) {
+          return state.isDarkMode;
+        },
+        builder: (context, isDarkMode) {
+          return Container(
+            color: isDarkMode ? darkPrimaryColor : accentColor,
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                DrawerHeader(
+                  decoration: BoxDecoration(
+                    color: isDarkMode ? darkAccentColor : accentColorShade,
                   ),
-                );
-              },
+                  child: const AppText(
+                    'Menu',
+                    color: Colors.black,
+                    fontSize: 24,
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(Icons.chat_bubble_outline,
+                      color: isDarkMode ? Colors.white : Colors.black),
+                  title: AppText('New Chat',
+                      color: isDarkMode ? Colors.white : Colors.black),
+                  onTap: () {
+                    context
+                        .read<ContentBloc>()
+                        .add(ContentStartNewSessionEvent());
+                    Navigator.pop(context);
+                  },
+                ),
+                BlocSelector<ContentBloc, ContentState, String?>(
+                  selector: (state) {
+                    return state.apiKey;
+                  },
+                  builder: (context, apiKey) {
+                    return Visibility(
+                      visible: apiKey != null,
+                      child: ListTile(
+                        leading: Icon(Icons.chat,
+                            color: isDarkMode ? Colors.white : Colors.black),
+                        title: AppText('Previous Chats',
+                            color: isDarkMode ? Colors.white : Colors.black),
+                        onTap: () {
+                          context.go('/chatSessions');
+                        },
+                      ),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.logout,
+                      color: isDarkMode ? Colors.white : Colors.black),
+                  title: AppText('Logout',
+                      color: isDarkMode ? Colors.white : Colors.black),
+                  onTap: () {
+                    context.read<ContentBloc>().add(ContentLogoutEvent());
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.dark_mode,
+                      color: isDarkMode ? Colors.white : Colors.black),
+                  title: AppText(isDarkMode ? 'Light Mode' : 'Dark Mode',
+                      color: isDarkMode ? Colors.white : Colors.black),
+                  onTap: () {
+                    context
+                        .read<ContentBloc>()
+                        .add(ContentToggleDarkModeEvent());
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.logout, color: Colors.black),
-              title: const AppText('Logout'),
-              onTap: () {
-                context.read<ContentBloc>().add(ContentLogoutEvent());
-                //context.go('/authentication');
-              },
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

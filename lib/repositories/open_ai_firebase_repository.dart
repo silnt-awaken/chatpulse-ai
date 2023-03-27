@@ -186,8 +186,4 @@ class OpenAIFirebaseRepository {
     history = messages.map((message) => Message.fromJson(message)).toList();
     summary = sessionSnapshot.data()?['summary'] as String;
   }
-
-  void dispose() {
-    apiKeyController.close();
-  }
 }

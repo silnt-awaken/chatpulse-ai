@@ -8,6 +8,7 @@ class ContentState extends Equatable {
   final ResponseStatus responseStatus;
   final String? userId;
   final String? apiKey;
+  final bool isDarkMode;
   const ContentState({
     required this.authStatus,
     required this.history,
@@ -16,6 +17,7 @@ class ContentState extends Equatable {
     required this.responseStatus,
     this.userId,
     this.apiKey,
+    required this.isDarkMode,
   });
 
   @override
@@ -26,7 +28,8 @@ class ContentState extends Equatable {
         inputText,
         responseStatus,
         userId ?? false,
-        apiKey ?? false
+        apiKey ?? false,
+        isDarkMode,
       ];
 
   ContentState copyWith({
@@ -37,6 +40,7 @@ class ContentState extends Equatable {
     ResponseStatus? responseStatus,
     String Function()? userId,
     String Function()? apiKey,
+    bool? isDarkMode,
   }) {
     return ContentState(
       authStatus: authStatus ?? this.authStatus,
@@ -46,6 +50,7 @@ class ContentState extends Equatable {
       responseStatus: responseStatus ?? this.responseStatus,
       userId: userId != null ? userId() : this.userId,
       apiKey: apiKey != null ? apiKey() : this.apiKey,
+      isDarkMode: isDarkMode ?? this.isDarkMode,
     );
   }
 }

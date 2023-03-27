@@ -18,6 +18,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           summary: '',
           inputText: '',
           responseStatus: ResponseStatus.idle,
+          isDarkMode: false,
         )) {
     on<ContentInitialEvent>((event, emit) async {
       await emit.forEach<User?>(authRepository.authStateChanges,
@@ -39,7 +40,6 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     on<ContentApiTrackerEvent>((event, emit) async {
       await emit.forEach<String>(openAIFirebaseRepository.apiKeyStream,
           onData: (apiKey) {
-        openAIFirebaseRepository.dispose();
         return state.copyWith(apiKey: () => apiKey);
       });
     });
@@ -83,8 +83,10 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       await openAIFirebaseRepository
           .getMessagesFromChangedSession(event.sessionId);
       emit(state.copyWith(
-          history: openAIFirebaseRepository.history,
-          summary: openAIFirebaseRepository.summary));
+        history: openAIFirebaseRepository.history,
+        summary: openAIFirebaseRepository.summary,
+        responseStatus: ResponseStatus.idle,
+      ));
     });
 
     on<ContentChangeResponseStatusEvent>((event, emit) {
@@ -93,7 +95,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
 
     on<ContentResetEvent>((event, emit) async {
       await openAIFirebaseRepository.newChatSession();
-      emit(ContentState(
+      emit(state.copyWith(
         authStatus: ContentAuthStatus.unauthorized,
         history: openAIFirebaseRepository.history,
         summary: openAIFirebaseRepository.summary,
@@ -121,6 +123,10 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           summary: openAIFirebaseRepository.summary,
           inputText: '',
           responseStatus: ResponseStatus.idle));
+    });
+
+    on<ContentToggleDarkModeEvent>((event, emit) {
+      emit(state.copyWith(isDarkMode: !state.isDarkMode));
     });
   }
 }

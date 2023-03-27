@@ -1,16 +1,18 @@
 import 'dart:math';
+import 'package:chatpulse_ai/styles/colors.dart';
 import 'package:flutter/material.dart';
 
 class DetailedFlowerPainter extends CustomPainter {
   final Size screenSize;
+  final Color color;
   static const double petalRadius = 120.0;
 
-  DetailedFlowerPainter({required this.screenSize});
+  DetailedFlowerPainter({required this.screenSize, this.color = accentColor});
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFFd5d5e5)
+      ..color = color
       ..strokeWidth = 3
       ..style = PaintingStyle.stroke;
 
@@ -61,14 +63,15 @@ class DetailedFlowerPainter extends CustomPainter {
 
 class SingleFlowerPainter extends CustomPainter {
   final Size screenSize;
+  final Color color;
   static const double petalRadius = 120.0;
 
-  SingleFlowerPainter({required this.screenSize});
+  SingleFlowerPainter({required this.screenSize, this.color = accentColor});
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFFd5d5e5)
+      ..color = color
       ..strokeWidth = 3
       ..style = PaintingStyle.stroke;
 
