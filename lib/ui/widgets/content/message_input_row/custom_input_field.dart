@@ -7,12 +7,14 @@ class CustomInputTextField extends StatefulWidget {
   final ScrollController scrollController;
   final String? sessionId;
   final TextEditingController textEditingController;
-  const CustomInputTextField(
-      {Key? key,
-      required this.scrollController,
-      this.sessionId,
-      required this.textEditingController})
-      : super(key: key);
+  final bool isDarkMode;
+  const CustomInputTextField({
+    Key? key,
+    required this.scrollController,
+    this.sessionId,
+    required this.textEditingController,
+    required this.isDarkMode,
+  }) : super(key: key);
 
   @override
   State<CustomInputTextField> createState() => _CustomInputTextFieldState();
@@ -48,31 +50,44 @@ class _CustomInputTextFieldState extends State<CustomInputTextField> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             color: const Color(0xFFE0E5EC),
-            boxShadow: _isFocused
+            boxShadow: widget.isDarkMode
                 ? [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withOpacity(0.8),
                       offset: const Offset(-3, -3),
                       blurRadius: 8,
                     ),
                     BoxShadow(
-                      color: Colors.white.withOpacity(0.5),
+                      color: Colors.grey.withOpacity(0.4),
                       offset: const Offset(3, 3),
                       blurRadius: 8,
                     ),
                   ]
-                : [
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.5),
-                      offset: const Offset(-6, -6),
-                      blurRadius: 16,
-                    ),
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      offset: const Offset(6, 6),
-                      blurRadius: 16,
-                    ),
-                  ],
+                : _isFocused
+                    ? [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          offset: const Offset(-3, -3),
+                          blurRadius: 8,
+                        ),
+                        BoxShadow(
+                          color: Colors.white.withOpacity(0.5),
+                          offset: const Offset(3, 3),
+                          blurRadius: 8,
+                        ),
+                      ]
+                    : [
+                        BoxShadow(
+                          color: Colors.white.withOpacity(0.5),
+                          offset: const Offset(-6, -6),
+                          blurRadius: 16,
+                        ),
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          offset: const Offset(6, 6),
+                          blurRadius: 16,
+                        ),
+                      ],
           ),
           child: Stack(
             children: [

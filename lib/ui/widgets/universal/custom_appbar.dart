@@ -49,23 +49,33 @@ class CustomAppBar extends SliverPersistentHeaderDelegate {
             child: Stack(
               children: [
                 Positioned.fill(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Visibility(
-                      visible: progress > 0.5,
-                      child: AnimatedOpacity(
-                        opacity: progress > 0.5 ? 1 : 0,
-                        duration: const Duration(milliseconds: 1000),
-                        child: IconButton(
-                          icon: const Icon(Icons.menu),
-                          iconSize: 28,
-                          color: isDarkMode
-                              ? Colors.white
-                              : Colors.black.withOpacity(0.8),
-                          onPressed: () => Scaffold.of(context).openDrawer(),
+                  child: BlocSelector<ContentBloc, ContentState, String>(
+                    selector: (state) {
+                      return state.summary;
+                    },
+                    builder: (context, summary) {
+                      return Align(
+                        alignment: summary.isEmpty
+                            ? Alignment.centerLeft
+                            : Alignment.topLeft,
+                        child: Visibility(
+                          visible: progress > 0.5,
+                          child: AnimatedOpacity(
+                            opacity: progress > 0.5 ? 1 : 0,
+                            duration: const Duration(milliseconds: 1000),
+                            child: IconButton(
+                              icon: const Icon(Icons.menu),
+                              iconSize: 28,
+                              color: isDarkMode
+                                  ? Colors.white
+                                  : Colors.black.withOpacity(0.8),
+                              onPressed: () =>
+                                  Scaffold.of(context).openDrawer(),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
                 ),
                 Positioned.fill(

@@ -24,11 +24,9 @@ class OpenAIFirebaseRepository {
 
   assignUserRef(String userId) {
     userRef = usersRef.doc(userId);
-    print('this is userRef: $userRef');
   }
 
   Future<bool> sendTextToOpenAI(String inputText, String userId) async {
-    currentChatSessionId ??= userRef!.collection('chats').doc().id;
     sessionRef = userRef!.collection('chats').doc(currentChatSessionId);
     DocumentSnapshot sessionSnapshot = await sessionRef.get();
 
@@ -185,5 +183,21 @@ class OpenAIFirebaseRepository {
     final messages = sessionSnapshot.data()?['messages'] as List;
     history = messages.map((message) => Message.fromJson(message)).toList();
     summary = sessionSnapshot.data()?['summary'] as String;
+  }
+
+  Stream<List<Message>> getChatSessionMessagesStream() async* {
+    currentChatSessionId ??= userRef!.collection('chats').doc().id;
+    yield* userRef!
+        .collection('chats')
+        .doc(currentChatSessionId)
+        .snapshots()
+        .map((chatSnapshot) {
+      if (chatSnapshot.exists) {
+        final messages = chatSnapshot.data()?['messages'] as List;
+        return messages.map((message) => Message.fromJson(message)).toList();
+      } else {
+        return [];
+      }
+    });
   }
 }

@@ -6,13 +6,15 @@ class SendButton extends StatefulWidget {
   final ScrollController scrollController;
   final String? sessionId;
   final TextEditingController textEditingController;
+  final bool isDarkMode;
 
-  const SendButton(
-      {Key? key,
-      required this.scrollController,
-      this.sessionId,
-      required this.textEditingController})
-      : super(key: key);
+  const SendButton({
+    Key? key,
+    required this.scrollController,
+    this.sessionId,
+    required this.textEditingController,
+    required this.isDarkMode,
+  }) : super(key: key);
 
   @override
   State<SendButton> createState() => _SendButtonState();
@@ -69,31 +71,44 @@ class _SendButtonState extends State<SendButton> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: const Color(0xFFE0E5EC),
-              boxShadow: isPressed
+              boxShadow: widget.isDarkMode
                   ? [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withOpacity(0.8),
                         offset: const Offset(-3, -3),
                         blurRadius: 8,
                       ),
                       BoxShadow(
-                        color: Colors.white.withOpacity(0.5),
+                        color: Colors.grey.withOpacity(0.4),
                         offset: const Offset(3, 3),
                         blurRadius: 8,
                       ),
                     ]
-                  : [
-                      BoxShadow(
-                        color: Colors.white.withOpacity(0.5),
-                        offset: const Offset(-6, -6),
-                        blurRadius: 16,
-                      ),
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        offset: const Offset(6, 6),
-                        blurRadius: 16,
-                      ),
-                    ],
+                  : isPressed
+                      ? [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            offset: const Offset(-3, -3),
+                            blurRadius: 8,
+                          ),
+                          BoxShadow(
+                            color: Colors.white.withOpacity(0.5),
+                            offset: const Offset(3, 3),
+                            blurRadius: 8,
+                          ),
+                        ]
+                      : [
+                          BoxShadow(
+                            color: Colors.white.withOpacity(0.5),
+                            offset: const Offset(-6, -6),
+                            blurRadius: 16,
+                          ),
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            offset: const Offset(6, 6),
+                            blurRadius: 16,
+                          ),
+                        ],
             ),
             child: const Center(
               child: AnimatedOpacity(

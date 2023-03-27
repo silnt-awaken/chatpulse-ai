@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:chatpulse_ai/styles/colors.dart';
 import 'package:flutter/material.dart';
 

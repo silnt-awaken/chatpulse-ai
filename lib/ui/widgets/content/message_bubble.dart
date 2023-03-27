@@ -80,9 +80,8 @@ class MessageBubble extends StatelessWidget {
                     child: BlocBuilder<ContentBloc, ContentState>(
                         builder: (context, state) {
                       if (!isSender) {
-                        return MarkdownBody(
-                          data: message,
-                          onTapText: () {
+                        return GestureDetector(
+                          onLongPress: () {
                             Clipboard.setData(ClipboardData(text: message));
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -90,22 +89,29 @@ class MessageBubble extends StatelessWidget {
                               ),
                             );
                           },
-                          selectable: true,
-                          styleSheet: MarkdownStyleSheet(
+                          child: MarkdownBody(
+                            data: message,
+                            selectable: true,
+                            styleSheet: MarkdownStyleSheet(
                               p: GoogleFonts.nunitoSans(
                                 color: Colors.black,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
                               ),
+                              //img: ,
                               code: GoogleFonts.spaceMono(
                                 color: Colors.white,
                                 backgroundColor: Colors.black,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
                               ),
+                              codeblockDecoration: BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
                               codeblockPadding: const EdgeInsets.all(8),
-                              codeblockDecoration:
-                                  const BoxDecoration(color: Colors.black)),
+                            ),
+                          ),
                         );
                       } else {
                         return AppText(message);
@@ -130,9 +136,16 @@ class MessageBubble extends StatelessWidget {
                                   .history
                                   .length -
                               1,
-                  child: const SpinKitThreeBounce(
-                    color: Colors.black87,
-                    size: 20,
+                  child: BlocSelector<ContentBloc, ContentState, bool>(
+                    selector: (state) {
+                      return state.isDarkMode;
+                    },
+                    builder: (context, isDarkMode) {
+                      return SpinKitThreeBounce(
+                        color: isDarkMode ? Colors.white : Colors.black87,
+                        size: 20,
+                      );
+                    },
                   ),
                 );
               },

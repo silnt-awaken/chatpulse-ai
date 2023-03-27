@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../../widgets.dart';
 
 class MicButton extends StatefulWidget {
-  const MicButton({super.key});
+  const MicButton({super.key, required this.isDarkMode});
+  final bool isDarkMode;
 
   @override
   State<MicButton> createState() => _MicButtonState();
@@ -34,31 +35,44 @@ class _MicButtonState extends State<MicButton> {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: const Color(0xFFE0E5EC),
-          boxShadow: isPressed
+          boxShadow: widget.isDarkMode
               ? [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withOpacity(0.8),
                     offset: const Offset(-3, -3),
                     blurRadius: 8,
                   ),
                   BoxShadow(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.grey.withOpacity(0.4),
                     offset: const Offset(3, 3),
                     blurRadius: 8,
                   ),
                 ]
-              : [
-                  BoxShadow(
-                    color: Colors.white.withOpacity(0.5),
-                    offset: const Offset(-6, -6),
-                    blurRadius: 16,
-                  ),
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
-                    offset: const Offset(6, 6),
-                    blurRadius: 16,
-                  ),
-                ],
+              : isPressed
+                  ? [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        offset: const Offset(-3, -3),
+                        blurRadius: 8,
+                      ),
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.5),
+                        offset: const Offset(3, 3),
+                        blurRadius: 8,
+                      ),
+                    ]
+                  : [
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.5),
+                        offset: const Offset(-6, -6),
+                        blurRadius: 16,
+                      ),
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        offset: const Offset(6, 6),
+                        blurRadius: 16,
+                      ),
+                    ],
         ),
         child: Center(
             child: AnimatedOpacity(

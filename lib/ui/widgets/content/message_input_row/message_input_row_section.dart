@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../blocs/content/content_bloc.dart';
 import 'message_input_row.dart';
 
 class MessageInputRowSection extends StatefulWidget {
@@ -17,32 +19,44 @@ class _MessageInputRowSectionState extends State<MessageInputRowSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
-        child: IntrinsicHeight(
-          child: Row(
-            children: [
-              const AttachmentButton(),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: CustomInputTextField(
-                scrollController: widget.scrollController,
-                sessionId: widget.sessionId,
-                textEditingController: _textEditingController,
-              )),
-              const SizedBox(width: 10),
-              SendButton(
-                  scrollController: widget.scrollController,
-                  sessionId: widget.sessionId,
-                  textEditingController: _textEditingController),
-              const SizedBox(width: 10),
-              const MicButton(),
-            ],
+    return BlocSelector<ContentBloc, ContentState, bool>(
+      selector: (state) {
+        return state.isDarkMode;
+      },
+      builder: (context, isDarkMode) {
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+            child: IntrinsicHeight(
+              child: Row(
+                children: [
+                  AttachmentButton(
+                    isDarkMode: isDarkMode,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                      child: CustomInputTextField(
+                    scrollController: widget.scrollController,
+                    sessionId: widget.sessionId,
+                    textEditingController: _textEditingController,
+                    isDarkMode: isDarkMode,
+                  )),
+                  const SizedBox(width: 10),
+                  SendButton(
+                    scrollController: widget.scrollController,
+                    sessionId: widget.sessionId,
+                    textEditingController: _textEditingController,
+                    isDarkMode: isDarkMode,
+                  ),
+                  const SizedBox(width: 10),
+                  MicButton(isDarkMode: isDarkMode),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
