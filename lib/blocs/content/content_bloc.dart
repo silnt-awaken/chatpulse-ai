@@ -69,9 +69,6 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
             ? ResponseStatus.success
             : ResponseStatus.failed,
       ));
-
-      openAIFirebaseRepository.historyStreamController
-          .add(openAIFirebaseRepository.history);
     });
 
     on<ContentStartNewSessionEvent>((event, emit) {
@@ -81,9 +78,6 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           summary: openAIFirebaseRepository.summary,
           responseStatus: ResponseStatus.idle,
           inputText: ''));
-
-      openAIFirebaseRepository.historyStreamController
-          .add(openAIFirebaseRepository.history);
     });
 
     on<ContentChangeSessionsEvent>((event, emit) async {
@@ -94,9 +88,6 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
         summary: openAIFirebaseRepository.summary,
         responseStatus: ResponseStatus.idle,
       ));
-
-      openAIFirebaseRepository.historyStreamController
-          .add(openAIFirebaseRepository.history);
     });
 
     on<ContentChangeResponseStatusEvent>((event, emit) {
@@ -112,9 +103,6 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
         inputText: '',
         responseStatus: ResponseStatus.idle,
       ));
-
-      openAIFirebaseRepository.historyStreamController
-          .add(openAIFirebaseRepository.history);
     });
 
     on<ContentCreateUserEvent>((event, emit) async {
@@ -136,9 +124,6 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           summary: openAIFirebaseRepository.summary,
           inputText: '',
           responseStatus: ResponseStatus.idle));
-
-      openAIFirebaseRepository.historyStreamController
-          .add(openAIFirebaseRepository.history);
     });
 
     on<ContentToggleDarkModeEvent>((event, emit) {
