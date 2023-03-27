@@ -22,6 +22,13 @@ class OpenAIFirebaseRepository {
   Stream<String> get apiKeyStream =>
       apiKeyController.stream.asBroadcastStream();
 
+  final StreamController<List<Message>> historyStreamController =
+      StreamController<List<Message>>.broadcast();
+  Stream<List<Message>> historyStream() {
+    currentChatSessionId ??= userRef!.collection('chats').doc().id;
+    return historyStreamController.stream;
+  }
+
   assignUserRef(String userId) {
     userRef = usersRef.doc(userId);
   }
@@ -32,6 +39,7 @@ class OpenAIFirebaseRepository {
 
     final userMessage = Message(text: inputText, role: MessageRole.user.value);
     history.add(userMessage);
+    historyStreamController.add(history);
 
     if (sessionSnapshot.exists) {
       await sessionRef.update({
@@ -186,7 +194,6 @@ class OpenAIFirebaseRepository {
   }
 
   Stream<List<Message>> getChatSessionMessagesStream() async* {
-    currentChatSessionId ??= userRef!.collection('chats').doc().id;
     yield* userRef!
         .collection('chats')
         .doc(currentChatSessionId)

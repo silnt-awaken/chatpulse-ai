@@ -19,15 +19,24 @@ class ContentSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: BlocSelector<ContentBloc, ContentState, List<Message>>(
-          selector: (state) {
-            return state.history;
+        child: BlocConsumer<ContentBloc, ContentState>(
+          listener: (context, state) {
+            if (state.responseStatus == ResponseStatus.success) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                scrollController.animateTo(
+                  scrollController.position.maxScrollExtent,
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.easeOut,
+                );
+              });
+            }
           },
-          builder: (context, history) {
+          builder: (context, state) {
             return StreamBuilder<List<Message>>(
                 stream: context
                     .read<OpenAIFirebaseRepository>()
-                    .getChatSessionMessagesStream(),
+                    .historyStream()
+                    .asBroadcastStream(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Column(children: [

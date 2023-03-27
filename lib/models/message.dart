@@ -1,8 +1,10 @@
-class Message {
+import 'package:equatable/equatable.dart';
+
+class Message extends Equatable {
   final String text;
   final String role;
 
-  Message({
+  const Message({
     required this.text,
     required this.role,
   });
@@ -30,6 +32,9 @@ class Message {
       'content': text,
     };
   }
+
+  @override
+  List<Object> get props => [text, role];
 }
 
 enum MessageRole {
