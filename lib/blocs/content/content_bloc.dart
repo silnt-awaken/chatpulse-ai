@@ -79,7 +79,8 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       emit(state.copyWith(
           history: openAIFirebaseRepository.history,
           summary: openAIFirebaseRepository.summary,
-          responseStatus: ResponseStatus.idle));
+          responseStatus: ResponseStatus.idle,
+          inputText: ''));
 
       openAIFirebaseRepository.historyStreamController
           .add(openAIFirebaseRepository.history);

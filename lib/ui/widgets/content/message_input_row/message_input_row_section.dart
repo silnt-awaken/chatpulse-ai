@@ -19,44 +19,51 @@ class _MessageInputRowSectionState extends State<MessageInputRowSection> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<ContentBloc, ContentState, bool>(
-      selector: (state) {
-        return state.isDarkMode;
+    return BlocListener<ContentBloc, ContentState>(
+      listener: (context, state) {
+        if (state.inputText.isEmpty) {
+          _textEditingController.clear();
+        }
       },
-      builder: (context, isDarkMode) {
-        return Align(
-          alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
-            child: IntrinsicHeight(
-              child: Row(
-                children: [
-                  AttachmentButton(
-                    isDarkMode: isDarkMode,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                      child: CustomInputTextField(
-                    scrollController: widget.scrollController,
-                    sessionId: widget.sessionId,
-                    textEditingController: _textEditingController,
-                    isDarkMode: isDarkMode,
-                  )),
-                  const SizedBox(width: 10),
-                  SendButton(
-                    scrollController: widget.scrollController,
-                    sessionId: widget.sessionId,
-                    textEditingController: _textEditingController,
-                    isDarkMode: isDarkMode,
-                  ),
-                  const SizedBox(width: 10),
-                  MicButton(isDarkMode: isDarkMode),
-                ],
+      child: BlocSelector<ContentBloc, ContentState, bool>(
+        selector: (state) {
+          return state.isDarkMode;
+        },
+        builder: (context, isDarkMode) {
+          return Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+              child: IntrinsicHeight(
+                child: Row(
+                  children: [
+                    AttachmentButton(
+                      isDarkMode: isDarkMode,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                        child: CustomInputTextField(
+                      scrollController: widget.scrollController,
+                      sessionId: widget.sessionId,
+                      textEditingController: _textEditingController,
+                      isDarkMode: isDarkMode,
+                    )),
+                    const SizedBox(width: 10),
+                    SendButton(
+                      scrollController: widget.scrollController,
+                      sessionId: widget.sessionId,
+                      textEditingController: _textEditingController,
+                      isDarkMode: isDarkMode,
+                    ),
+                    const SizedBox(width: 10),
+                    MicButton(isDarkMode: isDarkMode),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

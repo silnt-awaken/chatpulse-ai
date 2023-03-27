@@ -35,8 +35,12 @@ class SimpleDrawer extends StatelessWidget {
                 ListTile(
                   leading: Icon(Icons.chat_bubble_outline,
                       color: isDarkMode ? Colors.white : Colors.black),
-                  title: AppText('New Chat',
-                      color: isDarkMode ? Colors.white : Colors.black),
+                  minLeadingWidth: 0,
+                  title: AppText(
+                    'New Chat',
+                    color: isDarkMode ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.w600,
+                  ),
                   onTap: () {
                     context
                         .read<ContentBloc>()
@@ -52,11 +56,17 @@ class SimpleDrawer extends StatelessWidget {
                     return Visibility(
                       visible: apiKey != null,
                       child: ListTile(
-                        leading: Icon(Icons.chat,
+                        leading: Icon(Icons.chat_outlined,
                             color: isDarkMode ? Colors.white : Colors.black),
-                        title: AppText('Previous Chats',
-                            color: isDarkMode ? Colors.white : Colors.black),
+                        minLeadingWidth: 0,
+                        title: AppText(
+                          'Previous Chats',
+                          color: isDarkMode ? Colors.white : Colors.black,
+                          fontWeight: FontWeight.w600,
+                        ),
                         onTap: () {
+                          context.read<ContentBloc>().add(
+                              const ContentInputTextChangedEvent(text: ''));
                           context.go('/chatSessions');
                         },
                       ),
@@ -66,18 +76,34 @@ class SimpleDrawer extends StatelessWidget {
                 ListTile(
                   leading: Icon(Icons.logout,
                       color: isDarkMode ? Colors.white : Colors.black),
-                  title: AppText('Logout',
-                      color: isDarkMode ? Colors.white : Colors.black),
+                  minLeadingWidth: 0,
+                  title: AppText(
+                    'Logout',
+                    color: isDarkMode ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.w600,
+                  ),
                   onTap: () {
+                    context
+                        .read<ContentBloc>()
+                        .add(const ContentInputTextChangedEvent(text: ''));
                     context.read<ContentBloc>().add(ContentLogoutEvent());
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.dark_mode,
-                      color: isDarkMode ? Colors.white : Colors.black),
-                  title: AppText(isDarkMode ? 'Light Mode' : 'Dark Mode',
-                      color: isDarkMode ? Colors.white : Colors.black),
+                  leading: Icon(
+                    isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                    color: isDarkMode ? Colors.yellow : Colors.black,
+                  ),
+                  minLeadingWidth: 0,
+                  title: AppText(
+                    isDarkMode ? 'Light Mode' : 'Dark Mode',
+                    color: isDarkMode ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.w600,
+                  ),
                   onTap: () {
+                    context
+                        .read<ContentBloc>()
+                        .add(const ContentInputTextChangedEvent(text: ''));
                     context
                         .read<ContentBloc>()
                         .add(ContentToggleDarkModeEvent());
