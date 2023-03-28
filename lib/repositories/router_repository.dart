@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../blocs/content/content_bloc.dart';
 import '../ui/screens/screens.dart';
 
 class RouterRepository {
@@ -43,17 +45,15 @@ class RouterRepository {
           ),
         ],
         redirect: (context, state) async {
-          // if (state.location == '/') {
-          //   final hasStoredApiKey = await context
-          //       .read<OpenAIFirebaseRepository>()
-          //       .validateApiKey(null);
-
-          //   if (hasStoredApiKey) {
-          //     return null;
-          //   } else {
-          //     return '/authentication';
-          //   }
-          // }
+          if (state.location == '/authentication' &&
+              BlocProvider.of<ContentBloc>(context).state.validationState ==
+                  ValidationState.invalid) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Invalid API Key'),
+              ),
+            );
+          }
           return null;
         });
   }

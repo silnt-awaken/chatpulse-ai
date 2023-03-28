@@ -18,9 +18,8 @@ class OpenAIFirebaseRepository {
   List<Message> history = [];
   String summary = '';
 
-  final StreamController<String> apiKeyController = StreamController<String>();
-  Stream<String> get apiKeyStream =>
-      apiKeyController.stream.asBroadcastStream();
+  final StreamController<bool> apiKeyController = StreamController<bool>();
+  Stream<bool> get apiKeyStream => apiKeyController.stream.asBroadcastStream();
 
   assignUserRef(String userId) {
     userRef = usersRef.doc(userId);
@@ -121,14 +120,16 @@ class OpenAIFirebaseRepository {
 
       if (response.statusCode == 200) {
         this.apiKey = apiKey ?? fetchedApiKey;
-        apiKeyController.add(this.apiKey!);
+        apiKeyController.add(true);
         await userRef!.set({'apiKey': this.apiKey}, SetOptions(merge: true));
 
         return true;
       } else {
+        apiKeyController.add(false);
         return false;
       }
     } catch (e) {
+      apiKeyController.add(false);
       return false;
     }
   }

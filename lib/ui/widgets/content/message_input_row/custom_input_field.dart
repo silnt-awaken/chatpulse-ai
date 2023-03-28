@@ -30,6 +30,15 @@ class _CustomInputTextFieldState extends State<CustomInputTextField> {
     _focusNode.addListener(() {
       setState(() {
         _isFocused = _focusNode.hasFocus;
+        if (_isFocused) {
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+            widget.scrollController.animateTo(
+              widget.scrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeOut,
+            );
+          });
+        }
       });
     });
   }
@@ -103,16 +112,17 @@ class _CustomInputTextFieldState extends State<CustomInputTextField> {
                         return state.responseStatus;
                       },
                       builder: (context, state) {
-                        return BlocSelector<ContentBloc, ContentState, String?>(
+                        return BlocSelector<ContentBloc, ContentState,
+                            ValidationState>(
                           selector: (state) {
-                            return state.apiKey;
+                            return state.validationState;
                           },
-                          builder: (context, apiKey) {
+                          builder: (context, apiKeyState) {
                             return TextField(
                               controller: widget.textEditingController,
                               focusNode: _focusNode,
                               maxLines: null,
-                              enabled: apiKey != null,
+                              enabled: apiKeyState == ValidationState.validated,
                               onSubmitted: (value) {
                                 if (state == ResponseStatus.waiting) return;
                                 if (widget.textEditingController.text
@@ -147,9 +157,10 @@ class _CustomInputTextFieldState extends State<CustomInputTextField> {
                                 fontSize: 16,
                               ),
                               decoration: InputDecoration(
-                                hintText: apiKey == null
-                                    ? 'Awaiting api key validation...'
-                                    : 'Type your message here',
+                                hintText:
+                                    apiKeyState == ValidationState.validating
+                                        ? 'Awaiting api key validation...'
+                                        : 'Type your message here',
                                 hintStyle: GoogleFonts.nunitoSans(
                                   color: Colors.black54,
                                   fontSize: 16,

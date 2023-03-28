@@ -48,13 +48,13 @@ class SimpleDrawer extends StatelessWidget {
                     Navigator.pop(context);
                   },
                 ),
-                BlocSelector<ContentBloc, ContentState, String?>(
+                BlocSelector<ContentBloc, ContentState, ValidationState>(
                   selector: (state) {
-                    return state.apiKey;
+                    return state.validationState;
                   },
-                  builder: (context, apiKey) {
+                  builder: (context, apiKeyState) {
                     return Visibility(
-                      visible: apiKey != null,
+                      visible: apiKeyState == ValidationState.validated,
                       child: ListTile(
                         leading: Icon(Icons.chat_outlined,
                             color: isDarkMode ? Colors.white : Colors.black),

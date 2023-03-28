@@ -7,8 +7,8 @@ class ContentState extends Equatable {
   final String inputText;
   final ResponseStatus responseStatus;
   final String? userId;
-  final String? apiKey;
   final bool isDarkMode;
+  final ValidationState validationState;
   const ContentState({
     required this.authStatus,
     required this.history,
@@ -16,8 +16,8 @@ class ContentState extends Equatable {
     required this.inputText,
     required this.responseStatus,
     this.userId,
-    this.apiKey,
     required this.isDarkMode,
+    required this.validationState,
   });
 
   @override
@@ -28,8 +28,8 @@ class ContentState extends Equatable {
         inputText,
         responseStatus,
         userId ?? false,
-        apiKey ?? false,
         isDarkMode,
+        validationState,
       ];
 
   ContentState copyWith({
@@ -39,8 +39,8 @@ class ContentState extends Equatable {
     String? inputText,
     ResponseStatus? responseStatus,
     String Function()? userId,
-    String Function()? apiKey,
     bool? isDarkMode,
+    ValidationState? validationState,
   }) {
     return ContentState(
       authStatus: authStatus ?? this.authStatus,
@@ -49,8 +49,8 @@ class ContentState extends Equatable {
       inputText: inputText ?? this.inputText,
       responseStatus: responseStatus ?? this.responseStatus,
       userId: userId != null ? userId() : this.userId,
-      apiKey: apiKey != null ? apiKey() : this.apiKey,
       isDarkMode: isDarkMode ?? this.isDarkMode,
+      validationState: validationState ?? this.validationState,
     );
   }
 }
@@ -65,4 +65,11 @@ enum ResponseStatus {
   waiting,
   success,
   failed,
+}
+
+enum ValidationState {
+  none,
+  validating,
+  validated,
+  invalid,
 }

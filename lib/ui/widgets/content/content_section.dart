@@ -6,11 +6,16 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../blocs/content/content_bloc.dart';
 
-class ContentSection extends StatelessWidget {
-  ContentSection({super.key, required this.scrollController});
+class ContentSection extends StatefulWidget {
+  const ContentSection({super.key, required this.scrollController});
 
   final ScrollController scrollController;
 
+  @override
+  State<ContentSection> createState() => _ContentSectionState();
+}
+
+class _ContentSectionState extends State<ContentSection> {
   int messageCounter = 0;
 
   @override
@@ -21,8 +26,8 @@ class ContentSection extends StatelessWidget {
           listener: (context, state) {
             if (state.responseStatus == ResponseStatus.success) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                scrollController.animateTo(
-                  scrollController.position.maxScrollExtent,
+                widget.scrollController.animateTo(
+                  widget.scrollController.position.maxScrollExtent,
                   duration: const Duration(milliseconds: 100),
                   curve: Curves.easeOut,
                 );
@@ -39,7 +44,7 @@ class ContentSection extends StatelessWidget {
                       timestamp: '',
                       isSender: state.history.indexOf(message) % 2 == 0,
                       index: state.history.indexOf(message),
-                      scrollController: scrollController,
+                      scrollController: widget.scrollController,
                     ),
                   )
                   .toList(),

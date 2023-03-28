@@ -60,6 +60,9 @@ class _ContentScreenState extends State<ContentScreen> {
                           behavior: NoGlowScrollBehavior(),
                           child: CustomScrollView(
                             controller: _scrollController,
+                            keyboardDismissBehavior:
+                                ScrollViewKeyboardDismissBehavior.onDrag,
+                            physics: const BouncingScrollPhysics(),
                             slivers: [
                               SliverPersistentHeader(
                                   delegate: CustomAppBar(

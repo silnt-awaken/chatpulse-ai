@@ -37,6 +37,10 @@ class App extends StatelessWidget {
             } else {
               router.go('/authentication');
             }
+
+            if (state.validationState == ValidationState.invalid) {
+              router.go('/authentication');
+            }
           },
           child: MaterialApp.router(
             debugShowCheckedModeBanner: false,

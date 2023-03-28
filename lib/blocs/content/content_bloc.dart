@@ -19,6 +19,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           inputText: '',
           responseStatus: ResponseStatus.idle,
           isDarkMode: false,
+          validationState: ValidationState.none,
         )) {
     on<ContentInitialEvent>((event, emit) async {
       await emit.forEach<User?>(authRepository.authStateChanges,
@@ -30,7 +31,9 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           }
 
           return state.copyWith(
-              authStatus: ContentAuthStatus.authorized, userId: () => user.uid);
+              authStatus: ContentAuthStatus.authorized,
+              userId: () => user.uid,
+              validationState: ValidationState.validating);
         } else {
           return state.copyWith(authStatus: ContentAuthStatus.unauthorized);
         }
@@ -38,9 +41,13 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     });
 
     on<ContentApiTrackerEvent>((event, emit) async {
-      await emit.forEach<String>(openAIFirebaseRepository.apiKeyStream,
-          onData: (apiKey) {
-        return state.copyWith(apiKey: () => apiKey);
+      await emit.forEach<bool>(openAIFirebaseRepository.apiKeyStream,
+          onData: (isValidated) {
+        if (isValidated) {
+          return state.copyWith(validationState: ValidationState.validated);
+        } else {
+          return state.copyWith(validationState: ValidationState.invalid);
+        }
       });
     });
 
@@ -113,7 +120,8 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       emit(state.copyWith(
           authStatus: isValid
               ? ContentAuthStatus.authorized
-              : ContentAuthStatus.unauthorized));
+              : ContentAuthStatus.unauthorized,
+          validationState: ValidationState.validating));
     });
 
     on<ContentLogoutEvent>((event, emit) async {
