@@ -121,7 +121,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           authStatus: isValid
               ? ContentAuthStatus.authorized
               : ContentAuthStatus.unauthorized,
-          validationState: ValidationState.validating));
+          validationState: ValidationState.validated));
     });
 
     on<ContentLogoutEvent>((event, emit) async {
