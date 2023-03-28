@@ -53,7 +53,7 @@ class _SendButtonState extends State<SendButton> {
             );
             FocusManager.instance.primaryFocus?.unfocus();
 
-            context.read<ContentBloc>().add(ContentSendTextEvent(
+            context.read<ContentBloc>().add(ContentSendMessageForStreamEvent(
                 text: BlocProvider.of<ContentBloc>(context)
                     .state
                     .inputText

@@ -137,5 +137,30 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     on<ContentToggleDarkModeEvent>((event, emit) {
       emit(state.copyWith(isDarkMode: !state.isDarkMode));
     });
+
+    on<ContentSendMessageForStreamEvent>((event, emit) async {
+      if (state.userId == null) return;
+      emit(state.copyWith(
+        history: [
+          ...state.history,
+          Message(
+            text: event.text,
+            role: 'user',
+          )
+        ],
+        responseStatus: ResponseStatus.waiting,
+      ));
+      final messages = await openAIFirebaseRepository.prepareForStream(
+          event.text, state.userId!);
+      await emit.forEach<List<Message>>(
+          await openAIFirebaseRepository.getOpenAIStreamResponse(messages),
+          onData: (data) {
+        return state.copyWith(
+          history: openAIFirebaseRepository.history,
+          summary: openAIFirebaseRepository.summary,
+          responseStatus: ResponseStatus.generating,
+        );
+      });
+    });
   }
 }

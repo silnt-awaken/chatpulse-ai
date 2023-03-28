@@ -63,6 +63,7 @@ enum ContentAuthStatus {
 enum ResponseStatus {
   idle,
   waiting,
+  generating,
   success,
   failed,
 }

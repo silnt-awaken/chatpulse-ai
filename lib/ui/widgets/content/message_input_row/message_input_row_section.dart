@@ -24,6 +24,14 @@ class _MessageInputRowSectionState extends State<MessageInputRowSection> {
         if (state.inputText.isEmpty) {
           _textEditingController.clear();
         }
+
+        if (state.responseStatus == ResponseStatus.generating) {
+          widget.scrollController.animateTo(
+            widget.scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 10),
+            curve: Curves.easeOut,
+          );
+        }
       },
       child: BlocSelector<ContentBloc, ContentState, bool>(
         selector: (state) {

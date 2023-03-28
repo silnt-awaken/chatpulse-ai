@@ -35,6 +35,9 @@ class Message extends Equatable {
 
   @override
   List<Object> get props => [text, role];
+
+  @override
+  String toString() => 'Message { text: $text, role: $role }';
 }
 
 enum MessageRole {

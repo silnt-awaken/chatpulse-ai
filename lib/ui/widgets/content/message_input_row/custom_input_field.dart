@@ -136,7 +136,8 @@ class _CustomInputTextFieldState extends State<CustomInputTextField> {
                                 );
                                 FocusManager.instance.primaryFocus?.unfocus();
                                 context.read<ContentBloc>().add(
-                                    ContentSendTextEvent(text: value.trim()));
+                                    ContentSendMessageForStreamEvent(
+                                        text: value.trim()));
 
                                 context.read<ContentBloc>().add(
                                     const ContentInputTextChangedEvent(

@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:chatpulse_ai/models/message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 class OpenAIFirebaseRepository {
   final dio = Dio();
@@ -23,6 +25,104 @@ class OpenAIFirebaseRepository {
 
   assignUserRef(String userId) {
     userRef = usersRef.doc(userId);
+  }
+
+  Future<List<Map<String, dynamic>>> prepareForStream(
+      String inputText, String userId) async {
+    sessionRef = userRef!.collection('chats').doc(currentChatSessionId);
+    DocumentSnapshot sessionSnapshot = await sessionRef.get();
+
+    final userMessage = Message(text: inputText, role: MessageRole.user.value);
+    history.add(userMessage);
+
+    if (sessionSnapshot.exists) {
+      await sessionRef.update({
+        'messages': FieldValue.arrayUnion([userMessage.toJson()])
+      });
+    } else {
+      await sessionRef.set({
+        'messages': [userMessage.toJson()],
+        'summary': '',
+        'sessionId': currentChatSessionId,
+      });
+    }
+
+    final messages = [
+      ...history.map((message) => message.toJson()),
+    ];
+
+    return messages;
+  }
+
+  Future<Stream<List<Message>>> getOpenAIStreamResponse(
+      List<Map<String, dynamic>> messages) async {
+    history.add(Message(text: '', role: MessageRole.assistant.value));
+    try {
+      final response = await dio.post(
+        url,
+        data: {
+          "model": "gpt-3.5-turbo-0301",
+          "messages": messages,
+          "stream": true,
+        },
+        options: Options(
+          // Set the timeout in milliseconds, e.g., 5000 for 5 seconds
+          receiveTimeout: const Duration(seconds: 20),
+          responseType: ResponseType.stream,
+          persistentConnection: true,
+        ),
+      );
+
+      final stream = response.data.stream;
+      var buffer = <Message>[];
+      var decoder = utf8.decoder;
+      var transformer =
+          StreamTransformer<Uint8List, List<Message>>.fromHandlers(
+        handleData: (data, sink) {
+          var lines = decoder.convert(data).split('\n');
+          for (var line in lines) {
+            if (line.startsWith('data: ')) {
+              var payload = line.substring(6);
+              if (payload == '[DONE]') {
+                sink.add(buffer);
+                buffer = [];
+              } else {
+                var json = jsonDecode(payload);
+                // make sure it doesn't contain "role", just want "content" from "delta"
+                if (json.containsKey('choices') && !json.containsKey('role')) {
+                  var choices = json['choices'] as List<dynamic>;
+                  // cant contain "role" from json['choices'], only want "content" from "delta"
+                  var content = choices
+                      .map((c) => c.containsKey('delta') &&
+                              c['delta'].containsKey('content')
+                          ? c['delta']['content'] as String
+                          : '')
+                      .join('');
+                  final message =
+                      Message(text: content, role: MessageRole.assistant.value);
+
+                  final tempHistory = List.of(history);
+                  var lastMessageIndex = tempHistory.length - 1;
+                  tempHistory[lastMessageIndex] = Message(
+                      text: history[lastMessageIndex].text + message.text,
+                      role: MessageRole.assistant.value);
+                  history = tempHistory;
+
+                  buffer.add(message);
+
+                  sink.add(buffer);
+                }
+              }
+            }
+          }
+        },
+      );
+
+      return stream.transform(transformer).asBroadcastStream();
+    } catch (e) {
+      print(e);
+      return const Stream.empty();
+    }
   }
 
   Future<bool> sendTextToOpenAI(String inputText, String userId) async {
@@ -200,5 +300,16 @@ class OpenAIFirebaseRepository {
         return [];
       }
     });
+  }
+}
+
+class ServerSentEventTransformer
+    extends StreamTransformerBase<List<int>, String> {
+  @override
+  Stream<String> bind(Stream<List<int>> stream) {
+    return stream
+        .transform(utf8.decoder)
+        .transform(const LineSplitter())
+        .where((line) => !line.startsWith(':') && line.isNotEmpty);
   }
 }
