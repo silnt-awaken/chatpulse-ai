@@ -41,6 +41,10 @@ class App extends StatelessWidget {
             if (state.validationState == ValidationState.invalid) {
               router.go('/authentication');
             }
+
+            if (state.responseStatus == ResponseStatus.success) {
+              context.read<ContentBloc>().add(ContentFetchSummaryEvent());
+            }
           },
           child: MaterialApp.router(
             debugShowCheckedModeBanner: false,

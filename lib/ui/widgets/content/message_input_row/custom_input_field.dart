@@ -30,15 +30,6 @@ class _CustomInputTextFieldState extends State<CustomInputTextField> {
     _focusNode.addListener(() {
       setState(() {
         _isFocused = _focusNode.hasFocus;
-        if (_isFocused) {
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            widget.scrollController.animateTo(
-              widget.scrollController.position.maxScrollExtent,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            );
-          });
-        }
       });
     });
   }

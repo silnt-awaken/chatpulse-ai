@@ -42,7 +42,8 @@ class Message extends Equatable {
 
 enum MessageRole {
   user("user"),
-  assistant("assistant");
+  assistant("assistant"),
+  none("none");
 
   final String value;
   const MessageRole(this.value);

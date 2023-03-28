@@ -56,3 +56,5 @@ class ContentSendMessageForStreamEvent extends ContentEvent {
   final String text;
   const ContentSendMessageForStreamEvent({required this.text});
 }
+
+class ContentFetchSummaryEvent extends ContentEvent {}

@@ -55,28 +55,28 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       emit(state.copyWith(inputText: event.text));
     });
 
-    on<ContentSendTextEvent>((event, emit) async {
-      if (state.userId == null) return;
-      emit(state.copyWith(
-        history: [
-          ...state.history,
-          Message(
-            text: event.text,
-            role: 'user',
-          )
-        ],
-        responseStatus: ResponseStatus.waiting,
-      ));
-      final hasSuccessfullySent = await openAIFirebaseRepository
-          .sendTextToOpenAI(event.text, state.userId!);
-      emit(state.copyWith(
-        history: openAIFirebaseRepository.history,
-        summary: openAIFirebaseRepository.summary,
-        responseStatus: hasSuccessfullySent
-            ? ResponseStatus.success
-            : ResponseStatus.failed,
-      ));
-    });
+    // on<ContentSendTextEvent>((event, emit) async {
+    //   if (state.userId == null) return;
+    //   emit(state.copyWith(
+    //     history: [
+    //       ...state.history,
+    //       Message(
+    //         text: event.text,
+    //         role: 'user',
+    //       )
+    //     ],
+    //     responseStatus: ResponseStatus.waiting,
+    //   ));
+    //   final hasSuccessfullySent = await openAIFirebaseRepository
+    //       .sendTextToOpenAI(event.text, state.userId!);
+    //   emit(state.copyWith(
+    //     history: openAIFirebaseRepository.history,
+    //     summary: openAIFirebaseRepository.summary,
+    //     responseStatus: hasSuccessfullySent
+    //         ? ResponseStatus.success
+    //         : ResponseStatus.failed,
+    //   ));
+    // });
 
     on<ContentStartNewSessionEvent>((event, emit) {
       openAIFirebaseRepository.newChatSession();
@@ -154,13 +154,34 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           event.text, state.userId!);
       await emit.forEach<List<Message>>(
           await openAIFirebaseRepository.getOpenAIStreamResponse(messages),
-          onData: (data) {
-        return state.copyWith(
-          history: openAIFirebaseRepository.history,
-          summary: openAIFirebaseRepository.summary,
-          responseStatus: ResponseStatus.generating,
-        );
+          onData: (List<Message> data) {
+        if (data.isEmpty) {
+          return state.copyWith(responseStatus: ResponseStatus.success);
+        } else {
+          if (data.length == 1) {
+            if (data[0].role == 'none') {
+              return state.copyWith(
+                  responseStatus: ResponseStatus.failed,
+                  history: openAIFirebaseRepository.history);
+            } else {
+              return state.copyWith(
+                history: openAIFirebaseRepository.history,
+                responseStatus: ResponseStatus.generating,
+              );
+            }
+          } else {
+            return state.copyWith(
+              history: openAIFirebaseRepository.history,
+              responseStatus: ResponseStatus.generating,
+            );
+          }
+        }
       });
+    });
+
+    on<ContentFetchSummaryEvent>((event, emit) async {
+      await openAIFirebaseRepository.getSummary();
+      emit(state.copyWith(summary: openAIFirebaseRepository.summary));
     });
   }
 }
