@@ -65,7 +65,10 @@ class _MessageInputRowSectionState extends State<MessageInputRowSection> {
                       isDarkMode: isDarkMode,
                     ),
                     const SizedBox(width: 10),
-                    MicButton(isDarkMode: isDarkMode),
+                    MicButton(
+                      isDarkMode: isDarkMode,
+                      textEditingController: _textEditingController,
+                    ),
                   ],
                 ),
               ),

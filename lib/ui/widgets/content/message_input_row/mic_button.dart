@@ -1,10 +1,16 @@
+import 'package:chatpulse_ai/blocs/content/content_bloc.dart';
 import 'package:flutter/material.dart';
-
-import '../../widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 class MicButton extends StatefulWidget {
-  const MicButton({super.key, required this.isDarkMode});
+  const MicButton(
+      {super.key,
+      required this.isDarkMode,
+      required this.textEditingController});
   final bool isDarkMode;
+  final TextEditingController textEditingController;
 
   @override
   State<MicButton> createState() => _MicButtonState();
@@ -12,22 +18,56 @@ class MicButton extends StatefulWidget {
 
 class _MicButtonState extends State<MicButton> {
   bool isPressed = false;
+  final SpeechToText _speechToText = SpeechToText();
+  bool _speechEnabled = false;
+  String _lastWords = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _initSpeech();
+  }
+
+  void _initSpeech() async {
+    _speechEnabled = await _speechToText.initialize();
+    setState(() {});
+  }
+
+  void _startListening() async {
+    await _speechToText.listen(
+      onResult: _onSpeechResult,
+    );
+  }
+
+  void _stopListening() async {
+    await _speechToText.stop();
+    setState(() {});
+  }
+
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      _lastWords = result.recognizedWords;
+      widget.textEditingController.text = _lastWords;
+      context
+          .read<ContentBloc>()
+          .add(ContentInputTextChangedEvent(text: _lastWords));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: AppText(
-              'Voice recording coming soon!',
-              color: Colors.white,
-            ),
-          ),
-        );
-        // setState(() {
-        //   isPressed = !isPressed;
-        // });
+      onTapDown: (TapDownDetails details) {
+        setState(() {
+          isPressed = true;
+        });
+        _startListening();
+      },
+      onTapUp: (TapUpDetails details) {
+        setState(() {
+          isPressed = false;
+        });
+        _stopListening();
       },
       child: AnimatedContainer(
         height: 40,

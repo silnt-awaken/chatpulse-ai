@@ -47,5 +47,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Speech recognition is used to transcribe audio to text.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone is used to record audio.</string>
 </dict>
 </plist>

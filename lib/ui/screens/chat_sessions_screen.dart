@@ -31,18 +31,18 @@ class ChatSessionsScreen extends StatelessWidget {
               ),
               title: AppText('Chat Sessions',
                   color: isDarkMode ? Colors.white : Colors.black),
-              actions: [
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: AppText(
-                      'edit',
-                      color: isDarkMode ? Colors.white : Colors.black,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                )
+              actions: const [
+                // Align(
+                //   alignment: Alignment.centerRight,
+                //   child: Padding(
+                //     padding: const EdgeInsets.only(right: 16.0),
+                //     child: AppText(
+                //       'edit',
+                //       color: isDarkMode ? Colors.white : Colors.black,
+                //       fontWeight: FontWeight.w600,
+                //     ),
+                //   ),
+                // )
               ],
               backgroundColor: isDarkMode ? darkPrimaryColor : accentColor,
               iconTheme: const IconThemeData(color: Colors.black),
