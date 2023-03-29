@@ -61,12 +61,12 @@ class OpenAIFirebaseRepository {
       final response = await dio.post(
         url,
         data: {
-          "model": "gpt-3.5-turbo-0301",
+          "model": "gpt-4-0314",
           "messages": messages,
           "stream": true,
+          "temperature": 0.5,
         },
         options: Options(
-          // Set the timeout in milliseconds, e.g., 5000 for 5 seconds
           receiveTimeout: const Duration(seconds: 20),
           responseType: ResponseType.stream,
           persistentConnection: true,
@@ -134,77 +134,10 @@ class OpenAIFirebaseRepository {
       } else {
         history.removeLast();
       }
-      return Stream.value([Message(text: '', role: MessageRole.none.value)]);
+      return Stream.value([Message(text: '', role: MessageRole.none.value)])
+          .asBroadcastStream();
     }
   }
-
-  // Future<bool> sendTextToOpenAI(String inputText, String userId) async {
-  //   sessionRef = userRef!.collection('chats').doc(currentChatSessionId);
-  //   DocumentSnapshot sessionSnapshot = await sessionRef.get();
-
-  //   final userMessage = Message(text: inputText, role: MessageRole.user.value);
-  //   history.add(userMessage);
-
-  //   if (sessionSnapshot.exists) {
-  //     await sessionRef.update({
-  //       'messages': FieldValue.arrayUnion([userMessage.toJson()])
-  //     });
-  //   } else {
-  //     await sessionRef.set({
-  //       'messages': [userMessage.toJson()],
-  //       'summary': '',
-  //       'sessionId': currentChatSessionId,
-  //     });
-  //   }
-
-  //   final messages = [
-  //     ...history.map((message) => message.toJson()),
-  //   ];
-  //   try {
-  //     final response = await dio.post(
-  //       url,
-  //       data: {
-  //         "model": "gpt-3.5-turbo-0301",
-  //         "messages": messages,
-  //       },
-  //       options: Options(
-  //         // Set the timeout in milliseconds, e.g., 5000 for 5 seconds
-  //         receiveTimeout: const Duration(seconds: 20),
-  //       ),
-  //     );
-
-  //     String responseText = response.data['choices'][0]['message']['content'];
-  //     final assistantMessage =
-  //         Message(text: responseText, role: MessageRole.assistant.value);
-  //     history.add(assistantMessage);
-
-  //     summary = await getSummary();
-  //     sessionRef.update({
-  //       'messages': FieldValue.arrayUnion([assistantMessage.toJson()]),
-  //       'summary': summary
-  //     });
-  //     return true;
-  //   } on DioError catch (e) {
-  //     if (e.type == DioErrorType.connectionTimeout ||
-  //         e.type == DioErrorType.receiveTimeout) {
-  //       // Remove the user message from the history
-
-  //       // Handle the timeout error (e.g., show an error message to the user)
-  //       print('Request timed out');
-  //       return false;
-  //     }
-
-  //     history.removeLast();
-
-  //     // Remove the user message from the Firestore
-  //     await sessionRef.update({
-  //       'messages': FieldValue.arrayRemove([userMessage.toJson()])
-  //     });
-  //     print(e.error);
-
-  //     return false;
-  //   }
-  // }
 
   Future<bool> validateApiKey(String? apiKey) async {
     currentChatSessionId ??= userRef!.collection('chats').doc().id;
@@ -227,12 +160,16 @@ class OpenAIFirebaseRepository {
             {"role": "user", "content": "a"}
           ],
           "max_tokens": 1,
-          "temperature": 1.1
+          "temperature": 2,
         },
       );
 
       if (response.statusCode == 200) {
-        this.apiKey = apiKey ?? fetchedApiKey;
+        if (apiKey != null) {
+          this.apiKey = apiKey;
+        } else {
+          this.apiKey = fetchedApiKey;
+        }
         apiKeyController.add(true);
         await userRef!.set({'apiKey': this.apiKey}, SetOptions(merge: true));
 
@@ -267,13 +204,13 @@ class OpenAIFirebaseRepository {
         "messages": [
           {"role": "user", "content": prompt}
         ],
-        "temperature": 0.2
+        "temperature": 0.2,
       },
     );
 
     String responseText = response.data['choices'][0]['message']['content'];
     summary = responseText.trim();
-    sessionRef.update({'summary': summary});
+    await sessionRef.update({'summary': summary});
     return summary;
   }
 

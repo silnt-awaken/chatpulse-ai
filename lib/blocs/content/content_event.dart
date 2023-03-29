@@ -16,11 +16,6 @@ class ContentInputTextChangedEvent extends ContentEvent {
   const ContentInputTextChangedEvent({required this.text});
 }
 
-class ContentSendTextEvent extends ContentEvent {
-  final String text;
-  const ContentSendTextEvent({required this.text});
-}
-
 class ContentValidateAPIKeyEvent extends ContentEvent {
   final String apiKey;
   const ContentValidateAPIKeyEvent({required this.apiKey});
@@ -35,7 +30,9 @@ class ContentChangeSessionsEvent extends ContentEvent {
 
 class ContentChangeResponseStatusEvent extends ContentEvent {
   final ResponseStatus responseStatus;
-  const ContentChangeResponseStatusEvent({required this.responseStatus});
+  final bool? hasDraggedWhileGenerating;
+  const ContentChangeResponseStatusEvent(
+      {required this.responseStatus, this.hasDraggedWhileGenerating});
 }
 
 class ContentResetEvent extends ContentEvent {}

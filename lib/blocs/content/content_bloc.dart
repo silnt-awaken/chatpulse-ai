@@ -20,6 +20,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           responseStatus: ResponseStatus.idle,
           isDarkMode: false,
           validationState: ValidationState.none,
+          hasDraggedWhileGenerating: false,
         )) {
     on<ContentInitialEvent>((event, emit) async {
       await emit.forEach<User?>(authRepository.authStateChanges,
@@ -55,29 +56,6 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       emit(state.copyWith(inputText: event.text));
     });
 
-    // on<ContentSendTextEvent>((event, emit) async {
-    //   if (state.userId == null) return;
-    //   emit(state.copyWith(
-    //     history: [
-    //       ...state.history,
-    //       Message(
-    //         text: event.text,
-    //         role: 'user',
-    //       )
-    //     ],
-    //     responseStatus: ResponseStatus.waiting,
-    //   ));
-    //   final hasSuccessfullySent = await openAIFirebaseRepository
-    //       .sendTextToOpenAI(event.text, state.userId!);
-    //   emit(state.copyWith(
-    //     history: openAIFirebaseRepository.history,
-    //     summary: openAIFirebaseRepository.summary,
-    //     responseStatus: hasSuccessfullySent
-    //         ? ResponseStatus.success
-    //         : ResponseStatus.failed,
-    //   ));
-    // });
-
     on<ContentStartNewSessionEvent>((event, emit) {
       openAIFirebaseRepository.newChatSession();
       emit(state.copyWith(
@@ -98,7 +76,9 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     });
 
     on<ContentChangeResponseStatusEvent>((event, emit) {
-      emit(state.copyWith(responseStatus: event.responseStatus));
+      emit(state.copyWith(
+          responseStatus: event.responseStatus,
+          hasDraggedWhileGenerating: event.hasDraggedWhileGenerating));
     });
 
     on<ContentResetEvent>((event, emit) async {
@@ -181,7 +161,9 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
 
     on<ContentFetchSummaryEvent>((event, emit) async {
       await openAIFirebaseRepository.getSummary();
-      emit(state.copyWith(summary: openAIFirebaseRepository.summary));
+      emit(state.copyWith(
+          summary: openAIFirebaseRepository.summary,
+          hasDraggedWhileGenerating: false));
     });
   }
 }

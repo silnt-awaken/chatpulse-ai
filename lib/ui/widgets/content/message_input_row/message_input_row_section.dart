@@ -25,7 +25,8 @@ class _MessageInputRowSectionState extends State<MessageInputRowSection> {
           _textEditingController.clear();
         }
 
-        if (state.responseStatus == ResponseStatus.generating) {
+        if (state.responseStatus == ResponseStatus.generating &&
+            !state.hasDraggedWhileGenerating) {
           widget.scrollController.animateTo(
             widget.scrollController.position.maxScrollExtent,
             duration: const Duration(milliseconds: 10),

@@ -9,6 +9,7 @@ class ContentState extends Equatable {
   final String? userId;
   final bool isDarkMode;
   final ValidationState validationState;
+  final bool hasDraggedWhileGenerating;
   const ContentState({
     required this.authStatus,
     required this.history,
@@ -18,6 +19,7 @@ class ContentState extends Equatable {
     this.userId,
     required this.isDarkMode,
     required this.validationState,
+    required this.hasDraggedWhileGenerating,
   });
 
   @override
@@ -30,6 +32,7 @@ class ContentState extends Equatable {
         userId ?? false,
         isDarkMode,
         validationState,
+        hasDraggedWhileGenerating,
       ];
 
   ContentState copyWith({
@@ -41,6 +44,7 @@ class ContentState extends Equatable {
     String Function()? userId,
     bool? isDarkMode,
     ValidationState? validationState,
+    bool? hasDraggedWhileGenerating,
   }) {
     return ContentState(
       authStatus: authStatus ?? this.authStatus,
@@ -51,6 +55,8 @@ class ContentState extends Equatable {
       userId: userId != null ? userId() : this.userId,
       isDarkMode: isDarkMode ?? this.isDarkMode,
       validationState: validationState ?? this.validationState,
+      hasDraggedWhileGenerating:
+          hasDraggedWhileGenerating ?? this.hasDraggedWhileGenerating,
     );
   }
 }

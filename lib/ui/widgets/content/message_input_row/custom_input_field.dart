@@ -110,65 +110,64 @@ class _CustomInputTextFieldState extends State<CustomInputTextField> {
                           },
                           builder: (context, apiKeyState) {
                             return TextField(
-                              controller: widget.textEditingController,
-                              focusNode: _focusNode,
-                              maxLines: null,
-                              enabled: apiKeyState == ValidationState.validated,
-                              onSubmitted: (value) {
-                                if (state == ResponseStatus.waiting) return;
-                                if (widget.textEditingController.text
-                                    .trim()
-                                    .isEmpty) return;
-                                widget.scrollController.animateTo(
-                                  widget.scrollController.position
-                                      .maxScrollExtent,
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeOut,
-                                );
-                                FocusManager.instance.primaryFocus?.unfocus();
-                                context.read<ContentBloc>().add(
-                                    ContentSendMessageForStreamEvent(
-                                        text: value.trim()));
+                                controller: widget.textEditingController,
+                                focusNode: _focusNode,
+                                maxLines: null,
+                                enabled:
+                                    apiKeyState == ValidationState.validated,
+                                onSubmitted: (value) {
+                                  if (state == ResponseStatus.waiting) return;
+                                  if (widget.textEditingController.text
+                                      .trim()
+                                      .isEmpty) return;
+                                  widget.scrollController.animateTo(
+                                    widget.scrollController.position
+                                        .maxScrollExtent,
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeOut,
+                                  );
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                  context.read<ContentBloc>().add(
+                                      ContentSendMessageForStreamEvent(
+                                          text: value.trim()));
 
-                                context.read<ContentBloc>().add(
-                                    const ContentInputTextChangedEvent(
-                                        text: ''));
-                                widget.textEditingController.clear();
-                              },
-                              onChanged: ((value) {
-                                context.read<ContentBloc>().add(
-                                    ContentInputTextChangedEvent(text: value));
+                                  context.read<ContentBloc>().add(
+                                      const ContentInputTextChangedEvent(
+                                          text: ''));
+                                  widget.textEditingController.clear();
+                                },
+                                onChanged: ((value) {
+                                  context.read<ContentBloc>().add(
+                                      ContentInputTextChangedEvent(
+                                          text: value));
 
-                                widget.textEditingController.selection =
-                                    TextSelection.fromPosition(TextPosition(
-                                        offset: widget.textEditingController
-                                            .text.length));
-                              }),
-                              style: GoogleFonts.nunitoSans(
-                                color: Colors.black87,
-                                fontSize: 16,
-                              ),
-                              decoration: InputDecoration(
-                                hintText:
-                                    apiKeyState == ValidationState.validating
-                                        ? 'Awaiting api key validation...'
-                                        : 'Type your message here',
-                                hintStyle: GoogleFonts.nunitoSans(
-                                  color: Colors.black54,
+                                  // Remove the following lines
+                                  // widget.textEditingController.selection =
+                                  //     TextSelection.fromPosition(TextPosition(
+                                  //         offset: widget.textEditingController
+                                  //             .text.length));
+                                }),
+                                style: GoogleFonts.nunitoSans(
+                                  color: Colors.black87,
                                   fontSize: 16,
                                 ),
-                                border: InputBorder.none,
-                              ),
-                              cursorColor: Colors
-                                  .transparent, // hide the cursor by making it transparent
-                              showCursor: !_isFocused ||
-                                  _focusNode.hasFocus &&
-                                      _focusNode.hasFocus &&
-                                      _focusNode.hasFocus &&
-                                      _focusNode.hasFocus &&
-                                      _focusNode
-                                          .hasFocus, // hide the cursor if the TextField is not focused or if it is focused but there is no text
-                            );
+                                decoration: InputDecoration(
+                                  hintText:
+                                      apiKeyState == ValidationState.validating
+                                          ? 'Awaiting api key validation...'
+                                          : 'Type your message here',
+                                  hintStyle: GoogleFonts.nunitoSans(
+                                    color: Colors.black54,
+                                    fontSize: 16,
+                                  ),
+                                  border: InputBorder.none,
+                                ),
+                                cursorColor: Colors
+                                    .transparent, // hide the cursor by making it transparent
+                                showCursor: !_isFocused ||
+                                    _focusNode
+                                        .hasFocus // hide the cursor if the TextField is not focused or if it is focused but there is no text
+                                );
                           },
                         );
                       },
