@@ -165,5 +165,14 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           summary: openAIFirebaseRepository.summary,
           hasDraggedWhileGenerating: false));
     });
+
+    on<ContentDeleteChatSessionEvent>((event, emit) async {
+      await openAIFirebaseRepository.deleteChatSession(event.sessionId);
+      emit(state.copyWith(
+          history: openAIFirebaseRepository.history,
+          summary: openAIFirebaseRepository.summary,
+          responseStatus: ResponseStatus.idle,
+          inputText: ''));
+    });
   }
 }

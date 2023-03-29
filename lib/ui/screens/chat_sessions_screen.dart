@@ -77,6 +77,38 @@ class ChatSessionsScreen extends StatelessWidget {
                         horizontal: 32,
                         vertical: 8,
                       ),
+                      onLongPress: () {
+                        // open dialog
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const AppText('Delete Chat Session?'),
+                              content: const AppText(
+                                  'Are you sure you want to delete this chat session?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    context.read<ContentBloc>().add(
+                                        ContentDeleteChatSessionEvent(
+                                            sessionId:
+                                                chatSession['sessionId']));
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const AppText('Delete',
+                                      color: Colors.red),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const AppText('Cancel'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

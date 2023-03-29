@@ -252,6 +252,13 @@ class OpenAIFirebaseRepository {
       }
     });
   }
+
+  deleteChatSession(String sessionId) async {
+    await userRef!.collection('chats').doc(sessionId).delete();
+    if (currentChatSessionId == sessionId) {
+      newChatSession();
+    }
+  }
 }
 
 class ServerSentEventTransformer

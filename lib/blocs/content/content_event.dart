@@ -55,3 +55,8 @@ class ContentSendMessageForStreamEvent extends ContentEvent {
 }
 
 class ContentFetchSummaryEvent extends ContentEvent {}
+
+class ContentDeleteChatSessionEvent extends ContentEvent {
+  final String sessionId;
+  const ContentDeleteChatSessionEvent({required this.sessionId});
+}

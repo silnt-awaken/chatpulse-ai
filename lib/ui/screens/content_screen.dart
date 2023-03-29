@@ -67,44 +67,6 @@ class _ContentScreenState extends State<ContentScreen> {
                   body: SafeArea(
                     child: Stack(
                       children: [
-                        Visibility(
-                          visible: !_isAtBottom &&
-                              BlocProvider.of<ContentBloc>(context)
-                                      .state
-                                      .history
-                                      .length >
-                                  5,
-                          child: Positioned.fill(
-                              child: Align(
-                            alignment: Alignment.centerRight,
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.deferToChild,
-                              onTap: () {
-                                _scrollController.animateTo(
-                                    _scrollController.position.maxScrollExtent,
-                                    duration: const Duration(milliseconds: 500),
-                                    curve: Curves.easeInOut);
-                              },
-                              child: Container(
-                                  width: 50,
-                                  height: 50,
-                                  margin: const EdgeInsets.only(right: 20),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: isDarkMode
-                                        ? darkPrimaryColor
-                                        : primaryColor,
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: Icon(
-                                    Icons.arrow_downward,
-                                    color: isDarkMode
-                                        ? darkAccentColor
-                                        : Colors.black87,
-                                  )),
-                            ),
-                          )),
-                        ),
                         CustomScrollView(
                           scrollBehavior: NoGlowScrollBehavior(),
                           controller: _scrollController,
@@ -125,6 +87,49 @@ class _ContentScreenState extends State<ContentScreen> {
                               )
                             ]))
                           ],
+                        ),
+                        BlocSelector<ContentBloc, ContentState, int>(
+                          selector: (state) {
+                            return state.history.length;
+                          },
+                          builder: (context, historyLength) {
+                            return Visibility(
+                              visible: !_isAtBottom && historyLength > 5,
+                              child: Positioned.fill(
+                                  child: Align(
+                                alignment: Alignment.centerRight,
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.deferToChild,
+                                  onTap: () {
+                                    _scrollController.animateTo(
+                                        _scrollController
+                                            .position.maxScrollExtent,
+                                        duration:
+                                            const Duration(milliseconds: 500),
+                                        curve: Curves.easeInOut);
+                                  },
+                                  child: Container(
+                                    width: 50,
+                                    height: 50,
+                                    margin: const EdgeInsets.only(right: 20),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: isDarkMode
+                                          ? darkPrimaryColor
+                                          : primaryColor,
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Icon(
+                                      Icons.arrow_downward,
+                                      color: isDarkMode
+                                          ? darkAccentColor
+                                          : Colors.black87,
+                                    ),
+                                  ),
+                                ),
+                              )),
+                            );
+                          },
                         ),
                         MessageInputRowSection(
                           scrollController: _scrollController,
