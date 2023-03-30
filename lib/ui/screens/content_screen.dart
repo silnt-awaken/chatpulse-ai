@@ -2,6 +2,7 @@ import 'package:chatpulse_ai/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../blocs/content/content_bloc.dart';
 import '../../shaders/flowers_shader.dart';
@@ -77,9 +78,20 @@ class _ContentScreenState extends State<ContentScreen> {
                 ),
                 child: Scaffold(
                   backgroundColor: isDarkMode ? darkPrimaryColor : primaryColor,
-                  drawer: SimpleDrawer(
-                    reset: () => reset(),
-                  ),
+                  drawer: FutureBuilder<String>(
+                      future: PackageInfo.fromPlatform().then((value) {
+                        return value.version;
+                      }),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return SimpleDrawer(
+                            reset: () => reset(),
+                            versionNumber: snapshot.data!,
+                          );
+                        } else {
+                          return const SizedBox();
+                        }
+                      }),
                   body: SafeArea(
                     child: Stack(
                       children: [
