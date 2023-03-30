@@ -16,7 +16,8 @@ class ContentScreen extends StatefulWidget {
 
 class _ContentScreenState extends State<ContentScreen> {
   late final ScrollController _scrollController;
-  bool _isAtBottom = false;
+  bool _isAtBottom = true;
+  bool _scrollable = false;
 
   @override
   void initState() {
@@ -29,6 +30,11 @@ class _ContentScreenState extends State<ContentScreen> {
 
     _scrollController.addListener(() {
       setState(() {
+        if (_scrollController.position.extentInside >
+            _scrollController.position.viewportDimension) {
+          _scrollable = true;
+        }
+
         _isAtBottom = _scrollController.offset ==
             _scrollController.position.maxScrollExtent;
 
@@ -42,6 +48,13 @@ class _ContentScreenState extends State<ContentScreen> {
                   hasDraggedWhileGenerating: true));
         }
       });
+    });
+  }
+
+  void reset() {
+    setState(() {
+      _isAtBottom = true;
+      _scrollable = false;
     });
   }
 
@@ -63,7 +76,9 @@ class _ContentScreenState extends State<ContentScreen> {
                 ),
                 child: Scaffold(
                   backgroundColor: isDarkMode ? darkPrimaryColor : primaryColor,
-                  drawer: const SimpleDrawer(),
+                  drawer: SimpleDrawer(
+                    reset: () => reset(),
+                  ),
                   body: SafeArea(
                     child: Stack(
                       children: [
@@ -88,49 +103,44 @@ class _ContentScreenState extends State<ContentScreen> {
                             ]))
                           ],
                         ),
-                        BlocSelector<ContentBloc, ContentState, int>(
-                          selector: (state) {
-                            return state.history.length;
-                          },
-                          builder: (context, historyLength) {
-                            return Visibility(
-                              visible: !_isAtBottom && historyLength > 5,
-                              child: Positioned.fill(
-                                  child: Align(
-                                alignment: Alignment.centerRight,
-                                child: GestureDetector(
-                                  behavior: HitTestBehavior.deferToChild,
-                                  onTap: () {
-                                    _scrollController.animateTo(
-                                        _scrollController
-                                            .position.maxScrollExtent,
-                                        duration:
-                                            const Duration(milliseconds: 500),
-                                        curve: Curves.easeInOut);
-                                  },
-                                  child: Container(
-                                    width: 50,
-                                    height: 50,
-                                    margin: const EdgeInsets.only(right: 20),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: isDarkMode
-                                          ? darkPrimaryColor
-                                          : primaryColor,
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: Icon(
-                                      Icons.arrow_downward,
-                                      color: isDarkMode
-                                          ? darkAccentColor
-                                          : Colors.black87,
-                                    ),
+                        Builder(builder: (context) {
+                          return Visibility(
+                            visible: !_isAtBottom && !_scrollable,
+                            child: Positioned.fill(
+                                child: Align(
+                              alignment: Alignment.centerRight,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.deferToChild,
+                                onTap: () {
+                                  _scrollController.animateTo(
+                                      _scrollController
+                                          .position.maxScrollExtent,
+                                      duration:
+                                          const Duration(milliseconds: 500),
+                                      curve: Curves.easeInOut);
+                                },
+                                child: Container(
+                                  width: 50,
+                                  height: 50,
+                                  margin: const EdgeInsets.only(right: 20),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: isDarkMode
+                                        ? darkPrimaryColor
+                                        : primaryColor,
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Icon(
+                                    Icons.arrow_downward,
+                                    color: isDarkMode
+                                        ? darkAccentColor
+                                        : Colors.black87,
                                   ),
                                 ),
-                              )),
-                            );
-                          },
-                        ),
+                              ),
+                            )),
+                          );
+                        }),
                         MessageInputRowSection(
                           scrollController: _scrollController,
                         )

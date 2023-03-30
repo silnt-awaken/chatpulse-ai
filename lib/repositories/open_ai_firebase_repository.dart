@@ -65,6 +65,7 @@ class OpenAIFirebaseRepository {
           "messages": messages,
           "stream": true,
           "temperature": 0.5,
+          "user": userRef!.id
         },
         options: Options(
           receiveTimeout: const Duration(seconds: 20),

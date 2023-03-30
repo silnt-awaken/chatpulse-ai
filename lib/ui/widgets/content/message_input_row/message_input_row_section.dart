@@ -29,7 +29,7 @@ class _MessageInputRowSectionState extends State<MessageInputRowSection> {
             !state.hasDraggedWhileGenerating) {
           widget.scrollController.animateTo(
             widget.scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 10),
+            duration: const Duration(milliseconds: 300),
             curve: Curves.easeOut,
           );
         }

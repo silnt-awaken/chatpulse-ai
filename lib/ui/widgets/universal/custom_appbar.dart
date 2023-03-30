@@ -64,14 +64,18 @@ class CustomAppBar extends SliverPersistentHeaderDelegate {
                             opacity: progress > 0.5 ? 1 : 0,
                             duration: const Duration(milliseconds: 1000),
                             child: IconButton(
-                              icon: const Icon(Icons.menu),
-                              iconSize: 28,
-                              color: isDarkMode
-                                  ? Colors.white
-                                  : Colors.black.withOpacity(0.8),
-                              onPressed: () =>
-                                  Scaffold.of(context).openDrawer(),
-                            ),
+                                icon: const Icon(Icons.menu),
+                                iconSize: 28,
+                                color: isDarkMode
+                                    ? Colors.white
+                                    : Colors.black.withOpacity(0.8),
+                                onPressed: () {
+                                  context.read<ContentBloc>().add(
+                                      const ContentChangeResponseStatusEvent(
+                                          responseStatus: ResponseStatus.idle,
+                                          hasDraggedWhileGenerating: false));
+                                  Scaffold.of(context).openDrawer();
+                                }),
                           ),
                         ),
                       );

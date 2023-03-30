@@ -11,6 +11,7 @@ class AppText extends StatelessWidget {
     this.maxLines,
     this.overflow,
     this.textAlign,
+    this.selectable = false,
   });
 
   final String text;
@@ -20,19 +21,33 @@ class AppText extends StatelessWidget {
   final int? maxLines;
   final TextOverflow? overflow;
   final TextAlign? textAlign;
+  final bool selectable;
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: GoogleFonts.nunitoSans(
-        color: color,
-        fontSize: fontSize,
-        fontWeight: fontWeight,
-      ),
-      overflow: overflow,
-      maxLines: maxLines,
-      textAlign: textAlign,
-    );
+    if (selectable) {
+      return SelectableText(
+        text,
+        style: GoogleFonts.nunitoSans(
+          color: color,
+          fontSize: fontSize,
+          fontWeight: fontWeight,
+        ),
+        maxLines: maxLines,
+        textAlign: textAlign,
+      );
+    } else {
+      return Text(
+        text,
+        style: GoogleFonts.nunitoSans(
+          color: color,
+          fontSize: fontSize,
+          fontWeight: fontWeight,
+        ),
+        overflow: overflow,
+        maxLines: maxLines,
+        textAlign: textAlign,
+      );
+    }
   }
 }

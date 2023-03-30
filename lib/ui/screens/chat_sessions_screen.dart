@@ -68,75 +68,78 @@ class ChatSessionsScreen extends StatelessWidget {
                 }
 
                 final chatSessions = snapshot.data!;
-                return ListView.separated(
-                  itemCount: chatSessions.length,
-                  itemBuilder: (context, index) {
-                    final chatSession = chatSessions[index];
-                    return ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 8,
-                      ),
-                      onLongPress: () {
-                        // open dialog
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const AppText('Delete Chat Session?'),
-                              content: const AppText(
-                                  'Are you sure you want to delete this chat session?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    context.read<ContentBloc>().add(
-                                        ContentDeleteChatSessionEvent(
-                                            sessionId:
-                                                chatSession['sessionId']));
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const AppText('Delete',
-                                      color: Colors.red),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const AppText('Cancel'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AppText(
-                            chatSession['summary'].replaceAll('"', ''),
-                            color: isDarkMode ? Colors.white : Colors.black,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 8),
-                          AppText(
-                              '# of Messages: ${chatSession['messages'].length.toString()}',
-                              fontWeight: FontWeight.w600,
+                return ScrollConfiguration(
+                  behavior: NoGlowScrollBehavior(),
+                  child: ListView.separated(
+                    itemCount: chatSessions.length,
+                    itemBuilder: (context, index) {
+                      final chatSession = chatSessions[index];
+                      return ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 8,
+                        ),
+                        onLongPress: () {
+                          // open dialog
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const AppText('Delete Chat Session?'),
+                                content: const AppText(
+                                    'Are you sure you want to delete this chat session?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      context.read<ContentBloc>().add(
+                                          ContentDeleteChatSessionEvent(
+                                              sessionId:
+                                                  chatSession['sessionId']));
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const AppText('Delete',
+                                        color: Colors.red),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const AppText('Cancel'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            AppText(
+                              chatSession['summary'].replaceAll('"', ''),
                               color: isDarkMode ? Colors.white : Colors.black,
-                              fontSize: 14)
-                        ],
-                      ),
-                      onTap: () {
-                        context.read<ContentBloc>().add(
-                            ContentChangeSessionsEvent(
-                                sessionId: chatSession['sessionId']));
-                        context.go('/');
-                      },
-                    );
-                  },
-                  separatorBuilder: (context, index) => const Divider(
-                    color: Colors.black38,
-                    height: 1,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 8),
+                            AppText(
+                                '# of Messages: ${chatSession['messages'].length.toString()}',
+                                fontWeight: FontWeight.w600,
+                                color: isDarkMode ? Colors.white : Colors.black,
+                                fontSize: 14)
+                          ],
+                        ),
+                        onTap: () {
+                          context.read<ContentBloc>().add(
+                              ContentChangeSessionsEvent(
+                                  sessionId: chatSession['sessionId']));
+                          context.go('/');
+                        },
+                      );
+                    },
+                    separatorBuilder: (context, index) => const Divider(
+                      color: Colors.black38,
+                      height: 1,
+                    ),
                   ),
                 );
               },

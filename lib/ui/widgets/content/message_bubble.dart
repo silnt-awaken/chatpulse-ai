@@ -114,7 +114,10 @@ class MessageBubble extends StatelessWidget {
                           ),
                         );
                       } else {
-                        return AppText(message);
+                        return AppText(
+                          message,
+                          selectable: true,
+                        );
                       }
                     })),
               ),

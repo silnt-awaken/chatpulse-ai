@@ -30,9 +30,9 @@ class ContentChangeSessionsEvent extends ContentEvent {
 
 class ContentChangeResponseStatusEvent extends ContentEvent {
   final ResponseStatus responseStatus;
-  final bool? hasDraggedWhileGenerating;
+  final bool hasDraggedWhileGenerating;
   const ContentChangeResponseStatusEvent(
-      {required this.responseStatus, this.hasDraggedWhileGenerating});
+      {required this.responseStatus, this.hasDraggedWhileGenerating = false});
 }
 
 class ContentResetEvent extends ContentEvent {}

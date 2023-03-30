@@ -7,7 +7,9 @@ import 'package:go_router/go_router.dart';
 import '../../widgets.dart';
 
 class SimpleDrawer extends StatelessWidget {
-  const SimpleDrawer({Key? key}) : super(key: key);
+  const SimpleDrawer({Key? key, required this.reset}) : super(key: key);
+
+  final VoidCallback reset;
 
   @override
   Widget build(BuildContext context) {
@@ -19,98 +21,102 @@ class SimpleDrawer extends StatelessWidget {
         builder: (context, isDarkMode) {
           return Container(
             color: isDarkMode ? darkPrimaryColor : accentColor,
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: isDarkMode ? darkAccentColor : accentColorShade,
+            child: ScrollConfiguration(
+              behavior: NoGlowScrollBehavior(),
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: isDarkMode ? darkAccentColor : accentColorShade,
+                    ),
+                    child: const AppText(
+                      'Menu',
+                      color: Colors.black,
+                      fontSize: 24,
+                    ),
                   ),
-                  child: const AppText(
-                    'Menu',
-                    color: Colors.black,
-                    fontSize: 24,
+                  ListTile(
+                    leading: Icon(Icons.chat_bubble_outline,
+                        color: isDarkMode ? Colors.white : Colors.black),
+                    minLeadingWidth: 0,
+                    title: AppText(
+                      'New Chat',
+                      color: isDarkMode ? Colors.white : Colors.black,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    onTap: () {
+                      reset();
+                      context
+                          .read<ContentBloc>()
+                          .add(ContentStartNewSessionEvent());
+                      Navigator.pop(context);
+                    },
                   ),
-                ),
-                ListTile(
-                  leading: Icon(Icons.chat_bubble_outline,
-                      color: isDarkMode ? Colors.white : Colors.black),
-                  minLeadingWidth: 0,
-                  title: AppText(
-                    'New Chat',
-                    color: isDarkMode ? Colors.white : Colors.black,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  onTap: () {
-                    context
-                        .read<ContentBloc>()
-                        .add(ContentStartNewSessionEvent());
-                    Navigator.pop(context);
-                  },
-                ),
-                BlocSelector<ContentBloc, ContentState, ValidationState>(
-                  selector: (state) {
-                    return state.validationState;
-                  },
-                  builder: (context, apiKeyState) {
-                    return Visibility(
-                      visible: apiKeyState == ValidationState.validated,
-                      child: ListTile(
-                        leading: Icon(Icons.chat_outlined,
-                            color: isDarkMode ? Colors.white : Colors.black),
-                        minLeadingWidth: 0,
-                        title: AppText(
-                          'Previous Chats',
-                          color: isDarkMode ? Colors.white : Colors.black,
-                          fontWeight: FontWeight.w600,
+                  BlocSelector<ContentBloc, ContentState, ValidationState>(
+                    selector: (state) {
+                      return state.validationState;
+                    },
+                    builder: (context, apiKeyState) {
+                      return Visibility(
+                        visible: apiKeyState == ValidationState.validated,
+                        child: ListTile(
+                          leading: Icon(Icons.chat_outlined,
+                              color: isDarkMode ? Colors.white : Colors.black),
+                          minLeadingWidth: 0,
+                          title: AppText(
+                            'Previous Chats',
+                            color: isDarkMode ? Colors.white : Colors.black,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          onTap: () {
+                            context.read<ContentBloc>().add(
+                                const ContentInputTextChangedEvent(text: ''));
+                            context.go('/chatSessions');
+                          },
                         ),
-                        onTap: () {
-                          context.read<ContentBloc>().add(
-                              const ContentInputTextChangedEvent(text: ''));
-                          context.go('/chatSessions');
-                        },
-                      ),
-                    );
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.logout,
-                      color: isDarkMode ? Colors.white : Colors.black),
-                  minLeadingWidth: 0,
-                  title: AppText(
-                    'Logout',
-                    color: isDarkMode ? Colors.white : Colors.black,
-                    fontWeight: FontWeight.w600,
+                      );
+                    },
                   ),
-                  onTap: () {
-                    context
-                        .read<ContentBloc>()
-                        .add(const ContentInputTextChangedEvent(text: ''));
-                    context.read<ContentBloc>().add(ContentLogoutEvent());
-                  },
-                ),
-                ListTile(
-                  leading: Icon(
-                    isDarkMode ? Icons.light_mode : Icons.dark_mode,
-                    color: isDarkMode ? Colors.yellow : Colors.black,
+                  ListTile(
+                    leading: Icon(Icons.logout,
+                        color: isDarkMode ? Colors.white : Colors.black),
+                    minLeadingWidth: 0,
+                    title: AppText(
+                      'Logout',
+                      color: isDarkMode ? Colors.white : Colors.black,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    onTap: () {
+                      context
+                          .read<ContentBloc>()
+                          .add(const ContentInputTextChangedEvent(text: ''));
+                      context.read<ContentBloc>().add(ContentLogoutEvent());
+                    },
                   ),
-                  minLeadingWidth: 0,
-                  title: AppText(
-                    isDarkMode ? 'Light Mode' : 'Dark Mode',
-                    color: isDarkMode ? Colors.white : Colors.black,
-                    fontWeight: FontWeight.w600,
+                  ListTile(
+                    leading: Icon(
+                      isDarkMode ? Icons.light_mode : Icons.dark_mode,
+                      color: isDarkMode ? Colors.yellow : Colors.black,
+                    ),
+                    minLeadingWidth: 0,
+                    title: AppText(
+                      isDarkMode ? 'Light Mode' : 'Dark Mode',
+                      color: isDarkMode ? Colors.white : Colors.black,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    onTap: () {
+                      context
+                          .read<ContentBloc>()
+                          .add(const ContentInputTextChangedEvent(text: ''));
+                      context
+                          .read<ContentBloc>()
+                          .add(ContentToggleDarkModeEvent());
+                      Navigator.pop(context);
+                    },
                   ),
-                  onTap: () {
-                    context
-                        .read<ContentBloc>()
-                        .add(const ContentInputTextChangedEvent(text: ''));
-                    context
-                        .read<ContentBloc>()
-                        .add(ContentToggleDarkModeEvent());
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },

@@ -75,10 +75,18 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
       ));
     });
 
-    on<ContentChangeResponseStatusEvent>((event, emit) {
+    on<ContentChangeResponseStatusEvent>((event, emit) async {
       emit(state.copyWith(
           responseStatus: event.responseStatus,
           hasDraggedWhileGenerating: event.hasDraggedWhileGenerating));
+      if (event.hasDraggedWhileGenerating) {
+        await Future.delayed(const Duration(seconds: 5));
+        if (state.responseStatus != ResponseStatus.success) {
+          emit(state.copyWith(
+              responseStatus: ResponseStatus.generating,
+              hasDraggedWhileGenerating: false));
+        }
+      }
     });
 
     on<ContentResetEvent>((event, emit) async {
