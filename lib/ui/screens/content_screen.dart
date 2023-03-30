@@ -41,7 +41,8 @@ class _ContentScreenState extends State<ContentScreen> {
         if (_scrollController.position.userScrollDirection ==
                 ScrollDirection.forward &&
             BlocProvider.of<ContentBloc>(context).state.responseStatus ==
-                ResponseStatus.generating) {
+                ResponseStatus.generating &&
+            !BlocProvider.of<ContentBloc>(context).state.generationFinished) {
           context.read<ContentBloc>().add(
               const ContentChangeResponseStatusEvent(
                   responseStatus: ResponseStatus.idle,

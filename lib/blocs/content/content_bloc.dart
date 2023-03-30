@@ -21,6 +21,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           isDarkMode: false,
           validationState: ValidationState.none,
           hasDraggedWhileGenerating: false,
+          generationFinished: true,
         )) {
     on<ContentInitialEvent>((event, emit) async {
       await emit.forEach<User?>(authRepository.authStateChanges,
@@ -136,6 +137,7 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           )
         ],
         responseStatus: ResponseStatus.waiting,
+        generationFinished: false,
       ));
       final messages = await openAIFirebaseRepository.prepareForStream(
           event.text, state.userId!);
@@ -143,7 +145,8 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
           await openAIFirebaseRepository.getOpenAIStreamResponse(messages),
           onData: (List<Message> data) {
         if (data.isEmpty) {
-          return state.copyWith(responseStatus: ResponseStatus.success);
+          return state.copyWith(
+              responseStatus: ResponseStatus.success, generationFinished: true);
         } else {
           if (data.length == 1) {
             if (data[0].role == 'none') {
@@ -176,10 +179,11 @@ class ContentBloc extends Bloc<ContentEvent, ContentState> {
     on<ContentDeleteChatSessionEvent>((event, emit) async {
       await openAIFirebaseRepository.deleteChatSession(event.sessionId);
       emit(state.copyWith(
-          history: openAIFirebaseRepository.history,
-          summary: openAIFirebaseRepository.summary,
-          responseStatus: ResponseStatus.idle,
-          inputText: ''));
+        history: openAIFirebaseRepository.history,
+        summary: openAIFirebaseRepository.summary,
+        responseStatus: ResponseStatus.idle,
+        inputText: '',
+      ));
     });
   }
 }

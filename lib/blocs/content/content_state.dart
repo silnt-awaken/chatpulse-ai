@@ -10,6 +10,7 @@ class ContentState extends Equatable {
   final bool isDarkMode;
   final ValidationState validationState;
   final bool hasDraggedWhileGenerating;
+  final bool generationFinished;
   const ContentState({
     required this.authStatus,
     required this.history,
@@ -20,6 +21,7 @@ class ContentState extends Equatable {
     required this.isDarkMode,
     required this.validationState,
     required this.hasDraggedWhileGenerating,
+    required this.generationFinished,
   });
 
   @override
@@ -33,6 +35,7 @@ class ContentState extends Equatable {
         isDarkMode,
         validationState,
         hasDraggedWhileGenerating,
+        generationFinished,
       ];
 
   ContentState copyWith({
@@ -45,6 +48,7 @@ class ContentState extends Equatable {
     bool? isDarkMode,
     ValidationState? validationState,
     bool? hasDraggedWhileGenerating,
+    bool? generationFinished,
   }) {
     return ContentState(
       authStatus: authStatus ?? this.authStatus,
@@ -57,6 +61,7 @@ class ContentState extends Equatable {
       validationState: validationState ?? this.validationState,
       hasDraggedWhileGenerating:
           hasDraggedWhileGenerating ?? this.hasDraggedWhileGenerating,
+      generationFinished: generationFinished ?? this.generationFinished,
     );
   }
 }
