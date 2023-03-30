@@ -1,7 +1,7 @@
 import 'config.dart';
 
 void main() {
-  bootstrap(
+  bootstrap( 
     () => const App(),
   );
 }
